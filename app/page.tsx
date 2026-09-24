@@ -1,7 +1,7 @@
-import { IdpCapaPage } from "@/components/IdpCapaPage";
+import { IdpReport } from "@/components/IdpReport";
 import { getReport } from "@/lib/report";
 
 export default function HomePage() {
   const report = getReport();
-  return <IdpCapaPage report={report} />;
+  return <IdpReport report={report} />;
 }

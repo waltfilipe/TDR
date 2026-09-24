@@ -18,6 +18,9 @@ GRADE_COLORS: dict[str, str] = {
     "Above Level": "#094780",
 }
 
+MIN_IMPROVEMENTS = 4
+MAX_IMPROVEMENTS = 6
+
 
 def _row_for_player(df, player: str):
     if df is None or df.empty:
@@ -54,30 +57,9 @@ def build_report(player_name: str | None = None) -> dict:
 
     athlete = _row_for_player(atletas, player_name)
     grades = _row_for_player(tables["Player_Grades"], player_name)
-    psi = _row_for_player(tables["Tb_PSI"], player_name)
+    psi_labels = _row_for_player(tables["Tb_PSI"], player_name)
     psi_grades = _row_for_player(tables["Tb_PSIGrades"], player_name)
-    strengths = _row_for_player(tables["Tb_Strenghts"], player_name)
     improve = _row_for_player(tables["Tb_Improve"], player_name)
-    study = _row_for_player(tables["Tb_Study"], player_name)
-
-    radar_df = tables["Tb_Radar"]
-    radar_rows = radar_df[radar_df["Jogador"].astype(str) == player_name].sort_values("Ordem")
-    radar = [
-        {"label": str(row["Índice"]), "value": float(row["Valor"])}
-        for _, row in radar_rows.iterrows()
-    ]
-
-    mog_df = tables["MoG_Grades"]
-    mog_row = _row_for_player(mog_df, player_name)
-    mog = None
-    if mog_row:
-        mog = {
-            "offensiveOrganization": mog_row.get("Offensive Organization"),
-            "offensiveTransition": mog_row.get("Offensive Transitioin"),
-            "defensiveOrganization": mog_row.get("Defensive Organization"),
-            "defensiveTransition": mog_row.get("Defensive Transition"),
-            "deadBall": mog_row.get("Dead Ball"),
-        }
 
     technical_fields = [
         "General Passing",
@@ -89,7 +71,6 @@ def build_report(player_name: str | None = None) -> dict:
         "1v1 Defending",
         "Off Ball Defending",
     ]
-    mental_fields = ["Awareness", "Effort", "Team Work"]
     psi_fields = ["1st PSI", "2nd PSI", "3rd PSI", "4th PSI"]
 
     def grade_entry(field: str, source: dict) -> dict:
@@ -100,47 +81,39 @@ def build_report(player_name: str | None = None) -> dict:
             "color": GRADE_COLORS.get(label, "#c8c8c8"),
         }
 
+    improvements = [str(improve.get(str(i), "") or "").strip() for i in range(1, MAX_IMPROVEMENTS + 1)]
+    improvements = [text for text in improvements if text]
+    while len(improvements) < MIN_IMPROVEMENTS:
+        improvements.append("")
+
+    psi = [
+        {
+            "label": str(psi_labels.get(field, "") or "").strip(),
+            **grade_entry(field, psi_grades),
+        }
+        for field in psi_fields
+    ]
+
     return {
         "meta": {
             "source": PBIX_PATH.name,
             "page": "Duplicata de Duplicata de Capa",
-            "canvas": {"width": 1280, "height": 720},
             "gradeColors": GRADE_COLORS,
+            "improvementLimits": {"min": MIN_IMPROVEMENTS, "max": MAX_IMPROVEMENTS},
         },
         "player": {
-            "id": athlete.get("Player_ID"),
+            "id": int(athlete.get("Player_ID")),
             "name": athlete.get("Player"),
             "position": athlete.get("Position") or grades.get("Position"),
             "birth": athlete.get("Birth"),
             "height": athlete.get("Height"),
             "club": athlete.get("Club"),
-            "photo": athlete.get("Photo"),
             "instagram": athlete.get("Instagram"),
             "transfermarkt": athlete.get("Transfermark"),
         },
         "technicalGrades": [grade_entry(f, grades) for f in technical_fields],
-        "mentalGrades": [grade_entry(f, grades) for f in mental_fields],
-        "playerSpecificIndicators": {
-            "labels": {f: str(psi.get(f, "") or "") for f in psi_fields},
-            "grades": [grade_entry(f, psi_grades) for f in psi_fields],
-        },
-        "strengths": [
-            str(strengths.get("1", "") or ""),
-            str(strengths.get("2", "") or ""),
-            str(strengths.get("3", "") or ""),
-        ],
-        "improvements": [
-            str(improve.get("1", "") or ""),
-            str(improve.get("2", "") or ""),
-            str(improve.get("3", "") or ""),
-        ],
-        "studyReferences": [
-            str(study.get("1", "") or ""),
-            str(study.get("2", "") or ""),
-            str(study.get("3", "") or ""),
-        ],
-        "radar": radar,
-        "momentsOfGame": mog,
+        "playerSpecificIndicators": [entry for entry in psi if entry["label"] or entry["grade"]],
+        "improvements": improvements,
     }
 
 
