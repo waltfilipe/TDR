@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "source": "Modelo - IDP v2.pbix",
+    "page": "Duplicata de Duplicata de Capa",
+    "canvas": {
+      "width": 1280,
+      "height": 720
+    },
+    "gradeColors": {
+      "Below Level": "#a1343c",
+      "Average": "#ad5129",
+      "Good": "#05712D",
+      "Above Level": "#094780"
+    }
+  },
+  "player": {
+    "id": 1,
+    "name": "Sebastiao Nzita",
+    "position": "RB",
+    "birth": 2010,
+    "height": 170,
+    "club": "Houston Dynamo",
+    "photo": "https://static.hudl.com/users/temp/18070904_2b0dfefdfa5748b4ba86c3bd4188989f.jpeg",
+    "instagram": "https://www.instagram.com/sebastiao_nzita/",
+    "transfermarkt": "https://www.transfermarkt.com.br/sebastiao-nzita/profil/spieler/1330875"
+  },
+  "technicalGrades": [
+    {
+      "field": "General Passing",
+      "grade": "Above Level",
+      "color": "#094780"
+    },
+    {
+      "field": "Crossing",
+      "grade": "Good",
+      "color": "#05712D"
+    },
+    {
+      "field": "1st Touch",
+      "grade": "Average",
+      "color": "#ad5129"
+    },
+    {
+      "field": "1v1 Attacking",
+      "grade": "Good",
+      "color": "#05712D"
+    },
+    {
+      "field": "Shoting",
+      "grade": "Good",
+      "color": "#05712D"
+    },
+    {
+      "field": "Heading",
+      "grade": "Below Level",
+      "color": "#a1343c"
+    },
+    {
+      "field": "1v1 Defending",
+      "grade": "Average",
+      "color": "#ad5129"
+    },
+    {
+      "field": "Off Ball Defending",
+      "grade": "Good",
+      "color": "#05712D"
+    }
+  ],
+  "mentalGrades": [
+    {
+      "field": "Awareness",
+      "grade": "Average",
+      "color": "#ad5129"
+    },
+    {
+      "field": "Effort",
+      "grade": "Good",
+      "color": "#05712D"
+    },
+    {
+      "field": "Team Work",
+      "grade": "Good",
+      "color": "#05712D"
+    }
+  ],
+  "playerSpecificIndicators": {
+    "labels": {
+      "1st PSI": "Finishing",
+      "2nd PSI": "Long Ball",
+      "3rd PSI": "",
+      "4th PSI": ""
+    },
+    "grades": [
+      {
+        "field": "1st PSI",
+        "grade": "Good",
+        "color": "#05712D"
+      },
+      {
+        "field": "2nd PSI",
+        "grade": "Good",
+        "color": "#05712D"
+      },
+      {
+        "field": "3rd PSI",
+        "grade": "",
+        "color": "#c8c8c8"
+      },
+      {
+        "field": "4th PSI",
+        "grade": "",
+        "color": "#c8c8c8"
+      }
+    ]
+  },
+  "strengths": [
+    "Ability to combine",
+    "Decison-Making in Possession",
+    "Brave and Competitive Personality"
+  ],
+  "improvements": [
+    "Reaction to counter-press",
+    "Communication with team",
+    "Runs in behind"
+  ],
+  "studyReferences": [
+    "Trent AA",
+    "Mo Ali",
+    "Fulano"
+  ],
+  "radar": [
+    {
+      "label": "Off. Possession",
+      "value": 20.0
+    },
+    {
+      "label": "Set Pieces",
+      "value": 55.0
+    },
+    {
+      "label": "Def. Transition",
+      "value": 80.0
+    },
+    {
+      "label": "Def. Organization",
+      "value": 50.0
+    },
+    {
+      "label": "Off. Transition",
+      "value": 30.0
+    }
+  ],
+  "momentsOfGame": {
+    "offensiveOrganization": 20,
+    "offensiveTransition": 30,
+    "defensiveOrganization": 50,
+    "defensiveTransition": 80,
+    "deadBall": 55
+  }
+}
