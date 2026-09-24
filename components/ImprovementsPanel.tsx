@@ -71,7 +71,7 @@ export function ImprovementsPanel({ playerId, defaults, min, max }: Improvements
             Need to Improve
           </h2>
           <p className="panel__hint">
-            {filled.length} de {max} itens definidos · mínimo {min}
+            {filled.length} de {items.length} preenchidos · {min} a {max} pontos por relatório
           </p>
         </div>
         <div className="panel__actions">
@@ -134,7 +134,7 @@ export function ImprovementsPanel({ playerId, defaults, min, max }: Improvements
           {items.map((item, index) => (
             <li key={index} className={`improve-row${item.trim() ? "" : " improve-row--empty"}`}>
               <span className="improve-row__index">{index + 1}</span>
-              <span className="improve-row__text">{item.trim() || "Não definido"}</span>
+              <span className="improve-row__text">{item.trim() || "A definir"}</span>
             </li>
           ))}
         </ol>

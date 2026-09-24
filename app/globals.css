@@ -329,12 +329,11 @@ body {
 
 .improve-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
-  counter-reset: improve;
 }
 
 .improve-list--edit {
