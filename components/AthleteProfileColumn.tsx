@@ -19,14 +19,10 @@ function displayName(name: string): string {
 }
 
 export function AthleteProfileColumn({ player }: AthleteProfileColumnProps) {
-  const age =
-    player.birth && player.birth > 0 ? `${2026 - player.birth} years` : PLACEHOLDER;
-
   const metaItems = [
     { label: "Position", value: display(player.position) },
     { label: "Club", value: display(player.club) },
     { label: "Birth year", value: display(player.birth) },
-    { label: "Age", value: age },
     { label: "Height", value: player.height && player.height > 0 ? `${player.height} cm` : PLACEHOLDER },
   ];
 

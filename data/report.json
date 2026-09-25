@@ -6,7 +6,7 @@
       "Below Level": "#a1343c",
       "Average": "#ad5129",
       "Good": "#05712D",
-      "Above Level": "#094780"
+      "Above Level": "#044f80"
     },
     "improvementLimits": {
       "min": 4,
@@ -26,7 +26,7 @@
     {
       "field": "Link-Up Play (Lay-offs)",
       "grade": "Above Level",
-      "color": "#094780"
+      "color": "#044f80"
     },
     {
       "field": "Final Pass",

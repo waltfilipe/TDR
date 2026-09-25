@@ -15,7 +15,7 @@ GRADE_COLORS: dict[str, str] = {
     "Below Level": "#a1343c",
     "Average": "#ad5129",
     "Good": "#05712D",
-    "Above Level": "#094780",
+    "Above Level": "#044f80",
 }
 
 MIN_IMPROVEMENTS = 4

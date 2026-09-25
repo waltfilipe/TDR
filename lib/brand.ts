@@ -1,3 +1,24 @@
+/** SGA brand manual (2023) — primary palette and typography tokens. */
+export const SGA_COLORS = {
+  navy: "#072334",
+  blue: "#297cc1",
+  blueDeep: "#044f80",
+  white: "#ffffff",
+} as const;
+
+/** Performance grade colors aligned with IDP / brand reporting scale. */
+export const SGA_GRADE_COLORS = {
+  "Below Level": "#a1343c",
+  Average: "#ad5129",
+  Good: "#05712D",
+  "Above Level": SGA_COLORS.blueDeep,
+} as const;
+
+export const SGA_FONTS = {
+  ui: '"Source Sans 3", "Source Sans Pro", "Trebuchet MS", sans-serif',
+  display: '"Good Times", "Source Sans 3", sans-serif',
+} as const;
+
 export const BRAND = {
   name: "SGA Performance",
   legal: "Soccer Growth Analytics",

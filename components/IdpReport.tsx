@@ -63,7 +63,7 @@ export function IdpReport({ report }: IdpReportProps) {
         </main>
 
         <footer className="footer">
-          Source: {meta.source} · SGA Performance
+          <p className="footer__rights">All rights reserved.</p>
         </footer>
       </div>
     </>

@@ -1,4 +1,5 @@
 import report from "@/data/report.json";
+import { SGA_GRADE_COLORS } from "@/lib/brand";
 
 export type GradeName = "Below Level" | "Average" | "Good" | "Above Level";
 
@@ -49,10 +50,10 @@ export type IdpReport = {
 export const GRADE_SCALE: GradeName[] = ["Below Level", "Average", "Good", "Above Level"];
 
 export const GRADE_TOKENS: Record<GradeName, { color: string; short: string }> = {
-  "Below Level": { color: "#e2555f", short: "Below" },
-  Average: { color: "#e79038", short: "Average" },
-  Good: { color: "#2fb765", short: "Good" },
-  "Above Level": { color: "#297cc1", short: "Above" },
+  "Below Level": { color: SGA_GRADE_COLORS["Below Level"], short: "Below" },
+  Average: { color: SGA_GRADE_COLORS.Average, short: "Average" },
+  Good: { color: SGA_GRADE_COLORS.Good, short: "Good" },
+  "Above Level": { color: SGA_GRADE_COLORS["Above Level"], short: "Above" },
 };
 
 export function gradeLevel(grade: string): number {

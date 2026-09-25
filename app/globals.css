@@ -1,9 +1,13 @@
 :root {
-  /* Manual da marca SGA (2023) */
+  /* SGA brand manual (2023) — keep in sync with lib/brand.ts */
   --sga-navy: #072334;
   --sga-blue: #297cc1;
   --sga-blue-deep: #044f80;
   --sga-white: #ffffff;
+  --sga-grade-below: #a1343c;
+  --sga-grade-average: #ad5129;
+  --sga-grade-good: #05712d;
+  --sga-grade-above: var(--sga-blue-deep);
 
   --bg: var(--sga-navy);
   --bg-deep: #041722;
@@ -17,7 +21,7 @@
   --accent: var(--sga-blue);
   --accent-deep: var(--sga-blue-deep);
 
-  --font-ui: "Source Sans 3", "Trebuchet MS", sans-serif;
+  --font-ui: "Source Sans 3", "Source Sans Pro", "Trebuchet MS", sans-serif;
   --font-display: "Good Times", "Source Sans 3", sans-serif;
 
   --radius: 14px;
@@ -270,6 +274,7 @@ body {
 
 .athlete-details__name {
   margin: 0 0 18px;
+  font-family: var(--font-ui);
   font-size: clamp(22px, 2.8vw, 28px);
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -337,6 +342,7 @@ body {
 
 .panel__title {
   margin: 0;
+  font-family: var(--font-ui);
   font-size: 17px;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -748,7 +754,7 @@ body {
 }
 
 .btn--primary:hover:not(:disabled) {
-  background: #3d8fd0;
+  background: color-mix(in srgb, var(--sga-blue) 88%, var(--sga-white));
 }
 
 .btn--ghost {
@@ -782,8 +788,8 @@ body {
 }
 
 .btn--icon:hover:not(:disabled) {
-  border-color: #e2555f;
-  color: #e2555f;
+  border-color: var(--sga-grade-below);
+  color: var(--sga-grade-below);
 }
 
 /* ---------- Footer ---------- */
@@ -792,11 +798,17 @@ body {
   margin-top: 28px;
   padding-top: 16px;
   border-top: 1px solid var(--line);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
   text-align: center;
+}
+
+.footer__rights {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
 }
 
 /* ---------- Responsive ---------- */
