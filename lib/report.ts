@@ -27,8 +27,6 @@ export type IdpReport = {
     height: number;
     club: string;
     photo: string | null;
-    instagram: string | null;
-    transfermarkt: string | null;
   };
   technicalGrades: GradeEntry[];
   playerSpecificIndicators: PsiEntry[];

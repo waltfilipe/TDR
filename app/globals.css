@@ -109,24 +109,13 @@ body {
 
 .sga-brand {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
 }
 
-.sga-brand__symbol {
-  font-family: var(--font-display);
-  font-size: 28px;
-  letter-spacing: 0.12em;
-  line-height: 1;
-  color: var(--sga-white);
-}
-
-.sga-brand__wordmark {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--accent);
+.sga-brand__logo {
+  display: block;
+  width: auto;
+  height: clamp(32px, 4vw, 42px);
 }
 
 /* ---------- Two-column layout ---------- */
@@ -237,14 +226,6 @@ body {
   margin: 0;
   font-size: 15px;
   font-weight: 650;
-}
-
-.athlete-details__links {
-  display: grid;
-  gap: 8px;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
 }
 
 /* ---------- Panels ---------- */
@@ -608,8 +589,7 @@ body {
     background: #fff;
   }
 
-  .panel__actions,
-  .athlete-details__links {
+  .panel__actions {
     display: none;
   }
 

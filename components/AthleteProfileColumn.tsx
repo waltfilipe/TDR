@@ -57,21 +57,6 @@ export function AthleteProfileColumn({ player, age }: AthleteProfileColumnProps)
             </div>
           ))}
         </dl>
-
-        {(player.instagram || player.transfermarkt) && (
-          <div className="athlete-details__links">
-            {player.transfermarkt && (
-              <a className="btn btn--ghost btn--block" href={player.transfermarkt} target="_blank" rel="noreferrer">
-                Transfermarkt
-              </a>
-            )}
-            {player.instagram && (
-              <a className="btn btn--ghost btn--block" href={player.instagram} target="_blank" rel="noreferrer">
-                Instagram
-              </a>
-            )}
-          </div>
-        )}
       </div>
     </aside>
   );

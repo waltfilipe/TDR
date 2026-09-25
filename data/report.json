@@ -20,33 +20,31 @@
     "birth": 2010,
     "height": 170,
     "club": "Houston Dynamo",
-    "photo": "https://static.hudl.com/users/temp/18070904_2b0dfefdfa5748b4ba86c3bd4188989f.jpeg",
-    "instagram": "https://www.instagram.com/sebastiao_nzita/",
-    "transfermarkt": "https://www.transfermarkt.com.br/sebastiao-nzita/profil/spieler/1330875"
+    "photo": "https://static.hudl.com/users/temp/18070904_2b0dfefdfa5748b4ba86c3bd4188989f.jpeg"
   },
   "technicalGrades": [
     {
-      "field": "General Passing",
+      "field": "Link-Up Play (Lay-offs)",
       "grade": "Above Level",
       "color": "#094780"
     },
     {
-      "field": "Crossing",
+      "field": "Final Pass",
       "grade": "Good",
       "color": "#05712D"
     },
     {
-      "field": "1st Touch",
+      "field": "Ball Protection",
       "grade": "Average",
       "color": "#ad5129"
     },
     {
-      "field": "1v1 Attacking",
+      "field": "Finishing Touches",
       "grade": "Good",
       "color": "#05712D"
     },
     {
-      "field": "Shoting",
+      "field": "Finishing",
       "grade": "Good",
       "color": "#05712D"
     },
@@ -56,12 +54,12 @@
       "color": "#a1343c"
     },
     {
-      "field": "1v1 Defending",
+      "field": "Pressing Triggers",
       "grade": "Average",
       "color": "#ad5129"
     },
     {
-      "field": "Off Ball Defending",
+      "field": "Defensive Positioning",
       "grade": "Good",
       "color": "#05712D"
     }

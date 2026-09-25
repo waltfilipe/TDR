@@ -21,6 +21,27 @@ GRADE_COLORS: dict[str, str] = {
 MIN_IMPROVEMENTS = 4
 MAX_IMPROVEMENTS = 6
 
+# Rótulo no site → coluna em Player_Grades (até o PBIX trazer colunas dedicadas)
+TECHNICAL_INDICATORS: list[tuple[str, str | None]] = [
+    ("Link-Up Play (Lay-offs)", "General Passing"),
+    ("Final Pass", "Crossing"),
+    ("Ball Protection", "1st Touch"),
+    ("Finishing Touches", "1v1 Attacking"),
+    ("Finishing", "Shoting"),
+    ("Heading", "Heading"),
+    ("Pressing Triggers", "1v1 Defending"),
+    ("Defensive Positioning", "Off Ball Defending"),
+]
+
+
+def _optional_str(value) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text or text.lower() in {"<na>", "nan", "none"}:
+        return None
+    return text
+
 
 def _row_for_player(df, player: str):
     if df is None or df.empty:
@@ -61,16 +82,6 @@ def build_report(player_name: str | None = None) -> dict:
     psi_grades = _row_for_player(tables["Tb_PSIGrades"], player_name)
     improve = _row_for_player(tables["Tb_Improve"], player_name)
 
-    technical_fields = [
-        "General Passing",
-        "Crossing",
-        "1st Touch",
-        "1v1 Attacking",
-        "Shoting",
-        "Heading",
-        "1v1 Defending",
-        "Off Ball Defending",
-    ]
     psi_fields = ["1st PSI", "2nd PSI", "3rd PSI", "4th PSI"]
 
     def grade_entry(field: str, source: dict) -> dict:
@@ -79,6 +90,17 @@ def build_report(player_name: str | None = None) -> dict:
             "field": field,
             "grade": label,
             "color": GRADE_COLORS.get(label, "#c8c8c8"),
+        }
+
+    def technical_entry(display_label: str, pbix_column: str | None) -> dict:
+        if pbix_column and grades:
+            raw = str(grades.get(pbix_column, "") or "").strip()
+        else:
+            raw = ""
+        return {
+            "field": display_label,
+            "grade": raw,
+            "color": GRADE_COLORS.get(raw, "#c8c8c8"),
         }
 
     improvements = [str(improve.get(str(i), "") or "").strip() for i in range(1, MAX_IMPROVEMENTS + 1)]
@@ -108,11 +130,9 @@ def build_report(player_name: str | None = None) -> dict:
             "birth": athlete.get("Birth"),
             "height": athlete.get("Height"),
             "club": athlete.get("Club"),
-            "photo": athlete.get("Photo"),
-            "instagram": athlete.get("Instagram"),
-            "transfermarkt": athlete.get("Transfermark"),
+            "photo": _optional_str(athlete.get("Photo")),
         },
-        "technicalGrades": [grade_entry(f, grades) for f in technical_fields],
+        "technicalGrades": [technical_entry(label, col) for label, col in TECHNICAL_INDICATORS],
         "playerSpecificIndicators": [entry for entry in psi if entry["label"] or entry["grade"]],
         "improvements": improvements,
     }
