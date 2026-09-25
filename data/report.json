@@ -15,12 +15,12 @@
   },
   "player": {
     "id": 1,
-    "name": "Sebastiao Nzita",
-    "position": "RB",
-    "birth": 2010,
-    "height": 170,
-    "club": "Houston Dynamo",
-    "photo": "https://static.hudl.com/users/temp/18070904_2b0dfefdfa5748b4ba86c3bd4188989f.jpeg"
+    "name": "Athlete Name",
+    "position": "",
+    "birth": 0,
+    "height": 0,
+    "club": "",
+    "photo": null
   },
   "technicalGrades": [
     {
@@ -64,24 +64,6 @@
       "color": "#05712D"
     }
   ],
-  "playerSpecificIndicators": [
-    {
-      "label": "Finishing",
-      "field": "1st PSI",
-      "grade": "Good",
-      "color": "#05712D"
-    },
-    {
-      "label": "Long Ball",
-      "field": "2nd PSI",
-      "grade": "Good",
-      "color": "#05712D"
-    }
-  ],
-  "improvements": [
-    "Reaction to counter-press",
-    "Communication with team",
-    "Runs in behind",
-    ""
-  ]
+  "playerSpecificIndicators": [],
+  "improvements": ["", "", "", ""]
 }

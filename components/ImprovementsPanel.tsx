@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 
 type ImprovementsPanelProps = {
   playerId: number;
-  defaults: string[];
   min: number;
   max: number;
 };
@@ -15,9 +14,9 @@ function normalize(items: string[], min: number, max: number): string[] {
   return next;
 }
 
-export function ImprovementsPanel({ playerId, defaults, min, max }: ImprovementsPanelProps) {
+export function ImprovementsPanel({ playerId, min, max }: ImprovementsPanelProps) {
   const storageKey = `idp:improvements:${playerId}`;
-  const initial = useMemo(() => normalize(defaults, min, max), [defaults, min, max]);
+  const initial = useMemo(() => normalize([], min, max), [min, max]);
 
   const [items, setItems] = useState<string[]>(initial);
   const [editing, setEditing] = useState(false);
@@ -30,11 +29,14 @@ export function ImprovementsPanel({ playerId, defaults, min, max }: Improvements
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.every((item) => typeof item === "string")) {
           setItems(normalize(parsed, min, max));
+          setLoaded(true);
+          return;
         }
       }
     } catch {
       // Ignora storage indisponível (modo privado / cookies bloqueados).
     }
+    setItems(normalize([], min, max));
     setLoaded(true);
   }, [storageKey, min, max]);
 
@@ -61,7 +63,7 @@ export function ImprovementsPanel({ playerId, defaults, min, max }: Improvements
     setItems((current) => (current.length <= min ? current : current.filter((_, i) => i !== index)));
   };
 
-  const resetItems = () => setItems(normalize(defaults, min, max));
+  const resetItems = () => setItems(normalize([], min, max));
 
   return (
     <section className="panel" aria-labelledby="improve-title">

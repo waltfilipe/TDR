@@ -1,59 +1,59 @@
-import Image from "next/image";
 import type { IdpReport } from "@/lib/report";
 
 type AthleteProfileColumnProps = {
   player: IdpReport["player"];
-  age: number | null;
 };
 
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
+const PLACEHOLDER = "—";
+
+function display(value: string | number | null | undefined): string {
+  if (value === null || value === undefined) return PLACEHOLDER;
+  if (typeof value === "number" && value <= 0) return PLACEHOLDER;
+  const text = String(value).trim();
+  return text || PLACEHOLDER;
 }
 
-export function AthleteProfileColumn({ player, age }: AthleteProfileColumnProps) {
-  const metaItems = [
-    { label: "Posição", value: player.position },
-    { label: "Clube", value: player.club },
-    { label: "Nascimento", value: player.birth ? String(player.birth) : null },
-    { label: "Idade", value: age ? `${age} anos` : null },
-    { label: "Altura", value: player.height ? `${player.height} cm` : null },
-  ].filter((item) => Boolean(item.value));
+function displayName(name: string): string {
+  const text = name.trim();
+  return text || "Athlete Name";
+}
 
-  const photo = player.photo?.trim();
+export function AthleteProfileColumn({ player }: AthleteProfileColumnProps) {
+  const age =
+    player.birth && player.birth > 0 ? `${2026 - player.birth} anos` : PLACEHOLDER;
+
+  const metaItems = [
+    { label: "Posição", value: display(player.position) },
+    { label: "Clube", value: display(player.club) },
+    { label: "Nascimento", value: display(player.birth) },
+    { label: "Idade", value: age },
+    { label: "Altura", value: player.height && player.height > 0 ? `${player.height} cm` : PLACEHOLDER },
+  ];
 
   return (
     <aside className="athlete-column" aria-label="Perfil do atleta">
       <div className="athlete-photo">
-        {photo ? (
-          <Image
-            src={photo}
-            alt={`Foto de ${player.name}`}
-            fill
-            className="athlete-photo__img"
-            sizes="(max-width: 900px) 100vw, 340px"
-            priority
-          />
-        ) : (
-          <div className="athlete-photo__placeholder" aria-hidden="true">
-            {initials(player.name) || "—"}
-          </div>
-        )}
+        <div className="athlete-photo__placeholder athlete-photo__placeholder--generic" aria-hidden="true">
+          <svg viewBox="0 0 64 64" className="athlete-photo__icon" focusable="false">
+            <circle cx="32" cy="22" r="12" fill="currentColor" opacity="0.35" />
+            <path
+              d="M12 58c4-14 16-22 20-22s16 8 20 22"
+              fill="currentColor"
+              opacity="0.25"
+            />
+          </svg>
+        </div>
       </div>
 
       <div className="athlete-details">
         <p className="athlete-details__label">Atleta</p>
-        <h2 className="athlete-details__name">{player.name}</h2>
+        <h2 className="athlete-details__name">{displayName(player.name)}</h2>
 
         <dl className="athlete-details__meta">
           {metaItems.map((item) => (
             <div key={item.label} className="athlete-details__row">
               <dt>{item.label}</dt>
-              <dd>{item.value}</dd>
+              <dd className={item.value === PLACEHOLDER ? "is-placeholder" : undefined}>{item.value}</dd>
             </div>
           ))}
         </dl>

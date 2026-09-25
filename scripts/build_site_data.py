@@ -103,18 +103,7 @@ def build_report(player_name: str | None = None) -> dict:
             "color": GRADE_COLORS.get(raw, "#c8c8c8"),
         }
 
-    improvements = [str(improve.get(str(i), "") or "").strip() for i in range(1, MAX_IMPROVEMENTS + 1)]
-    improvements = [text for text in improvements if text]
-    while len(improvements) < MIN_IMPROVEMENTS:
-        improvements.append("")
-
-    psi = [
-        {
-            "label": str(psi_labels.get(field, "") or "").strip(),
-            **grade_entry(field, psi_grades),
-        }
-        for field in psi_fields
-    ]
+    improvements = [""] * MIN_IMPROVEMENTS
 
     return {
         "meta": {
@@ -124,16 +113,16 @@ def build_report(player_name: str | None = None) -> dict:
             "improvementLimits": {"min": MIN_IMPROVEMENTS, "max": MAX_IMPROVEMENTS},
         },
         "player": {
-            "id": int(athlete.get("Player_ID")),
-            "name": athlete.get("Player"),
-            "position": athlete.get("Position") or grades.get("Position"),
-            "birth": athlete.get("Birth"),
-            "height": athlete.get("Height"),
-            "club": athlete.get("Club"),
-            "photo": _optional_str(athlete.get("Photo")),
+            "id": int(athlete.get("Player_ID") or 1),
+            "name": "Athlete Name",
+            "position": "",
+            "birth": 0,
+            "height": 0,
+            "club": "",
+            "photo": None,
         },
         "technicalGrades": [technical_entry(label, col) for label, col in TECHNICAL_INDICATORS],
-        "playerSpecificIndicators": [entry for entry in psi if entry["label"] or entry["grade"]],
+        "playerSpecificIndicators": [],
         "improvements": improvements,
     }
 

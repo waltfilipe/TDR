@@ -68,7 +68,7 @@ body {
 .shell {
   width: min(1240px, 100%);
   margin: 0 auto;
-  padding: 28px 24px 56px;
+  padding: 28px 24px 56px 28px;
 }
 
 /* ---------- Header ---------- */
@@ -154,16 +154,30 @@ body {
   opacity: 0.92;
 }
 
-.scroll-brand {
-  display: none;
+.sga-logo--vertical.sga-logo--corner {
+  height: clamp(52px, 7vh, 72px);
+  width: auto;
+}
+
+.brand-corner {
   position: fixed;
-  top: 50%;
-  right: max(12px, calc((100vw - 1240px) / 2 - 132px));
+  left: 0;
+  bottom: 0;
   z-index: 5;
+  display: flex;
+  align-items: stretch;
   pointer-events: none;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
-  transition: transform 0.12s ease-out;
-  will-change: transform;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.35));
+}
+
+.brand-corner__stripe {
+  flex: 0 0 5px;
+  background: var(--sga-white);
+}
+
+.brand-corner .sga-logo {
+  padding: 8px 12px 10px 10px;
+  background: rgba(7, 35, 52, 0.94);
 }
 
 .sga-logo--symbol.sga-logo--md {
@@ -232,6 +246,15 @@ body {
   background: linear-gradient(160deg, rgba(41, 124, 193, 0.25), rgba(7, 35, 52, 0.8));
 }
 
+.athlete-photo__placeholder--generic {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.athlete-photo__icon {
+  width: min(38%, 120px);
+  height: auto;
+}
+
 .athlete-details {
   padding: 20px 20px 22px;
 }
@@ -284,6 +307,11 @@ body {
   margin: 0;
   font-size: 15px;
   font-weight: 650;
+}
+
+.athlete-details__row dd.is-placeholder {
+  color: var(--text-muted);
+  font-weight: 550;
 }
 
 /* ---------- Panels ---------- */
@@ -354,9 +382,7 @@ body {
 
 .badge {
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 5px;
+  align-items: center;
   flex-shrink: 0;
 }
 
@@ -371,22 +397,6 @@ body {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
-}
-
-.badge__meter {
-  display: inline-flex;
-  gap: 3px;
-}
-
-.badge__meter i {
-  width: 14px;
-  height: 3px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.badge__meter i.is-on {
-  background: var(--badge-color);
 }
 
 .badge--empty {
@@ -511,6 +521,99 @@ body {
   color: var(--text-muted);
 }
 
+/* ---------- Player-specific indicators ---------- */
+
+.psi-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.psi-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(4, 23, 34, 0.45);
+}
+
+.psi-row--read {
+  justify-content: space-between;
+}
+
+.psi-row__index {
+  display: grid;
+  place-items: center;
+  flex: 0 0 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(41, 124, 193, 0.22);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.psi-row__label {
+  flex: 1 1 auto;
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.psi-row__grade {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.psi-row--empty .psi-row__label {
+  color: var(--text-muted);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.psi-row__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  background: rgba(4, 23, 34, 0.65);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.psi-row__select {
+  flex: 0 0 min(160px, 38%);
+  padding: 9px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  background: rgba(4, 23, 34, 0.65);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.psi-row__input:focus-visible,
+.psi-row__select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.psi-editor {
+  display: grid;
+  gap: 12px;
+}
+
 /* ---------- Buttons ---------- */
 
 .btn {
@@ -604,12 +707,6 @@ body {
 
 /* ---------- Responsive ---------- */
 
-@media (min-width: 1100px) {
-  .scroll-brand {
-    display: block;
-  }
-}
-
 @media (max-width: 900px) {
   .report-grid {
     grid-template-columns: 1fr;
@@ -655,6 +752,10 @@ body {
   }
 
   .panel__actions {
+    display: none;
+  }
+
+  .brand-corner {
     display: none;
   }
 
