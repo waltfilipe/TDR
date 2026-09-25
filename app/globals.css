@@ -65,10 +65,24 @@ body {
 
 /* ---------- Shell ---------- */
 
-.shell {
-  width: min(1240px, 100%);
+.page-frame {
+  width: min(1320px, 100%);
   margin: 0 auto;
-  padding: 28px 24px 56px;
+  padding: 0 16px 32px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.brand-rail {
+  display: none;
+}
+
+.shell {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 8px 40px;
 }
 
 /* ---------- Header ---------- */
@@ -79,8 +93,26 @@ body {
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px 28px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid var(--line);
+  padding: 20px 22px 22px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(4, 79, 128, 0.35), rgba(7, 35, 52, 0.85));
+  box-shadow: var(--shadow);
+}
+
+.report-header__brand-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-header__tagline {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 
 .report-header__intro {
@@ -112,10 +144,45 @@ body {
   align-items: center;
 }
 
-.sga-brand__logo {
+.sga-logo {
   display: block;
   width: auto;
-  height: clamp(32px, 4vw, 42px);
+  object-fit: contain;
+}
+
+.sga-logo--horizontal.sga-logo--xs {
+  height: 24px;
+}
+
+.sga-logo--horizontal.sga-logo--sm {
+  height: 32px;
+}
+
+.sga-logo--horizontal.sga-logo--md {
+  height: 40px;
+}
+
+.sga-logo--horizontal.sga-logo--lg {
+  height: 48px;
+}
+
+.sga-logo--horizontal.sga-logo--xl {
+  height: clamp(52px, 6vw, 64px);
+}
+
+.sga-logo--vertical.sga-logo--sidebar {
+  height: clamp(88px, 12vw, 112px);
+  width: auto;
+}
+
+.sga-logo--symbol.sga-logo--md {
+  height: 40px;
+  width: 40px;
+}
+
+.sga-logo--symbol.sga-logo--lg {
+  height: 52px;
+  width: 52px;
 }
 
 /* ---------- Two-column layout ---------- */
@@ -147,6 +214,34 @@ body {
   background: linear-gradient(180deg, var(--surface-solid) 0%, rgba(7, 35, 52, 0.95) 100%);
   box-shadow: var(--shadow);
   overflow: hidden;
+}
+
+.athlete-column__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(4, 79, 128, 0.22);
+}
+
+.athlete-column__brand-text {
+  margin: 0;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.athlete-column__brand-text strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--sga-white);
 }
 
 .athlete-photo {
@@ -533,18 +628,65 @@ body {
 
 /* ---------- Footer ---------- */
 
-.footer {
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-top: 28px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(7, 35, 52, 0.55);
+}
+
+.site-footer__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
-  text-align: center;
+}
+
+.site-footer__copy strong {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--sga-white);
 }
 
 /* ---------- Responsive ---------- */
+
+@media (min-width: 1080px) {
+  .page-frame {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .brand-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 24px;
+    padding-top: 36px;
+  }
+
+  .brand-rail__label {
+    margin: 0;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+}
 
 @media (max-width: 900px) {
   .report-grid {
@@ -557,6 +699,10 @@ body {
 
   .report-header__intro {
     text-align: left;
+  }
+
+  .report-header {
+    padding: 16px;
   }
 }
 

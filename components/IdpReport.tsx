@@ -3,6 +3,8 @@ import { GradeLegend } from "@/components/GradeLegend";
 import { ImprovementsPanel } from "@/components/ImprovementsPanel";
 import { IndicatorGrid } from "@/components/IndicatorGrid";
 import { SgaBrand } from "@/components/SgaBrand";
+import { SgaLogo } from "@/components/SgaLogo";
+import { BRAND } from "@/lib/brand";
 import type { IdpReport as IdpReportData } from "@/lib/report";
 
 type IdpReportProps = {
@@ -16,11 +18,20 @@ export function IdpReport({ report }: IdpReportProps) {
   const age = player.birth ? CURRENT_SEASON_YEAR - player.birth : null;
 
   return (
-    <div className="shell">
+    <div className="page-frame">
+      <aside className="brand-rail" aria-label="Marca SGA">
+        <SgaLogo variant="vertical" size="sidebar" />
+        <p className="brand-rail__label">{BRAND.name}</p>
+      </aside>
+
+      <div className="shell">
       <header className="report-header">
-        <SgaBrand />
+        <div className="report-header__brand-block">
+          <SgaBrand />
+          <p className="report-header__tagline">{BRAND.legal}</p>
+        </div>
         <div className="report-header__intro">
-          <p className="report-header__eyebrow">Soccer Growth Analytics</p>
+          <p className="report-header__eyebrow">Relatório oficial · {BRAND.name}</p>
           <h1 className="report-header__title">Training Development Report</h1>
         </div>
       </header>
@@ -78,9 +89,16 @@ export function IdpReport({ report }: IdpReportProps) {
         </div>
       </main>
 
-      <footer className="footer">
-        Fonte: {meta.source} · SGA Performance
+      <footer className="site-footer">
+        <SgaLogo variant="horizontal" size="sm" />
+        <div className="site-footer__copy">
+          <strong>{BRAND.name}</strong>
+          <span>
+            Fonte: {meta.source} · {BRAND.legal}
+          </span>
+        </div>
       </footer>
+      </div>
     </div>
   );
 }
