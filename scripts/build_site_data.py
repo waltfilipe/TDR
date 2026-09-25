@@ -108,6 +108,7 @@ def build_report(player_name: str | None = None) -> dict:
             "birth": athlete.get("Birth"),
             "height": athlete.get("Height"),
             "club": athlete.get("Club"),
+            "photo": athlete.get("Photo"),
             "instagram": athlete.get("Instagram"),
             "transfermarkt": athlete.get("Transfermark"),
         },

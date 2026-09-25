@@ -26,6 +26,7 @@ export type IdpReport = {
     birth: number;
     height: number;
     club: string;
+    photo: string | null;
     instagram: string | null;
     transfermarkt: string | null;
   };
@@ -41,7 +42,7 @@ export const GRADE_TOKENS: Record<GradeName, { color: string; short: string }> =
   "Below Level": { color: "#e2555f", short: "Below" },
   Average: { color: "#e79038", short: "Average" },
   Good: { color: "#2fb765", short: "Good" },
-  "Above Level": { color: "#3f8ff0", short: "Above" },
+  "Above Level": { color: "#297cc1", short: "Above" },
 };
 
 export function gradeLevel(grade: string): number {
