@@ -9,7 +9,7 @@ export const BRAND = {
 } as const;
 
 export type LogoVariant = keyof typeof BRAND.logos;
-export type LogoSize = "xs" | "sm" | "md" | "lg" | "xl" | "sidebar";
+export type LogoSize = "xs" | "sm" | "md" | "lg" | "xl" | "hero" | "sidebar" | "float";
 
 export const LOGO_DIMENSIONS: Record<
   LogoVariant,

@@ -1,6 +1,4 @@
 import Image from "next/image";
-import { SgaLogo } from "@/components/SgaLogo";
-import { BRAND } from "@/lib/brand";
 import type { IdpReport } from "@/lib/report";
 
 type AthleteProfileColumnProps = {
@@ -30,13 +28,6 @@ export function AthleteProfileColumn({ player, age }: AthleteProfileColumnProps)
 
   return (
     <aside className="athlete-column" aria-label="Perfil do atleta">
-      <div className="athlete-column__brand">
-        <SgaLogo variant="vertical" size="sidebar" />
-        <p className="athlete-column__brand-text">
-          <span>{BRAND.legal}</span>
-          <strong>{BRAND.name}</strong>
-        </p>
-      </div>
       <div className="athlete-photo">
         {photo ? (
           <Image
