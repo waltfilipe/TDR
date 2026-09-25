@@ -20,18 +20,18 @@ function displayName(name: string): string {
 
 export function AthleteProfileColumn({ player }: AthleteProfileColumnProps) {
   const age =
-    player.birth && player.birth > 0 ? `${2026 - player.birth} anos` : PLACEHOLDER;
+    player.birth && player.birth > 0 ? `${2026 - player.birth} years` : PLACEHOLDER;
 
   const metaItems = [
-    { label: "Posição", value: display(player.position) },
-    { label: "Clube", value: display(player.club) },
-    { label: "Nascimento", value: display(player.birth) },
-    { label: "Idade", value: age },
-    { label: "Altura", value: player.height && player.height > 0 ? `${player.height} cm` : PLACEHOLDER },
+    { label: "Position", value: display(player.position) },
+    { label: "Club", value: display(player.club) },
+    { label: "Birth year", value: display(player.birth) },
+    { label: "Age", value: age },
+    { label: "Height", value: player.height && player.height > 0 ? `${player.height} cm` : PLACEHOLDER },
   ];
 
   return (
-    <aside className="athlete-column" aria-label="Perfil do atleta">
+    <aside className="athlete-column" aria-label="Athlete profile">
       <div className="athlete-photo">
         <div className="athlete-photo__placeholder athlete-photo__placeholder--generic" aria-hidden="true">
           <svg viewBox="0 0 64 64" className="athlete-photo__icon" focusable="false">
@@ -46,7 +46,7 @@ export function AthleteProfileColumn({ player }: AthleteProfileColumnProps) {
       </div>
 
       <div className="athlete-details">
-        <p className="athlete-details__label">Atleta</p>
+        <p className="athlete-details__label">Athlete</p>
         <h2 className="athlete-details__name">{displayName(player.name)}</h2>
 
         <dl className="athlete-details__meta">

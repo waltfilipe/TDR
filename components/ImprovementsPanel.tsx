@@ -34,7 +34,7 @@ export function ImprovementsPanel({ playerId, min, max }: ImprovementsPanelProps
         }
       }
     } catch {
-      // Ignora storage indisponível (modo privado / cookies bloqueados).
+      // localStorage unavailable
     }
     setItems(normalize([], min, max));
     setLoaded(true);
@@ -45,7 +45,7 @@ export function ImprovementsPanel({ playerId, min, max }: ImprovementsPanelProps
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(items));
     } catch {
-      // Sem persistência: a edição continua válida na sessão atual.
+      // persistence unavailable for this session
     }
   }, [items, loaded, storageKey]);
 
@@ -73,22 +73,22 @@ export function ImprovementsPanel({ playerId, min, max }: ImprovementsPanelProps
             Need to Improve
           </h2>
           <p className="panel__hint">
-            {filled.length} de {items.length} preenchidos · {min} a {max} pontos por relatório
+            {filled.length} of {items.length} filled · {min} to {max} items per report
           </p>
         </div>
         <div className="panel__actions">
           {editing ? (
             <>
               <button type="button" className="btn btn--ghost" onClick={resetItems}>
-                Restaurar
+                Reset
               </button>
               <button type="button" className="btn btn--primary" onClick={() => setEditing(false)}>
-                Concluir
+                Done
               </button>
             </>
           ) : (
             <button type="button" className="btn btn--primary" onClick={() => setEditing(true)}>
-              Editar
+              Edit
             </button>
           )}
         </div>
@@ -104,7 +104,7 @@ export function ImprovementsPanel({ playerId, min, max }: ImprovementsPanelProps
                   className="improve-row__input"
                   value={item}
                   maxLength={120}
-                  placeholder={`Ponto de desenvolvimento ${index + 1}`}
+                  placeholder={`Development focus ${index + 1}`}
                   onChange={(event) => updateItem(index, event.target.value)}
                   aria-label={`Item ${index + 1}`}
                 />
@@ -113,8 +113,8 @@ export function ImprovementsPanel({ playerId, min, max }: ImprovementsPanelProps
                   className="btn btn--icon"
                   onClick={() => removeItem(index)}
                   disabled={items.length <= min}
-                  aria-label={`Remover item ${index + 1}`}
-                  title={items.length <= min ? `Mínimo de ${min} itens` : "Remover item"}
+                  aria-label={`Remove item ${index + 1}`}
+                  title={items.length <= min ? `Minimum of ${min} items` : "Remove item"}
                 >
                   ×
                 </button>
@@ -127,16 +127,16 @@ export function ImprovementsPanel({ playerId, min, max }: ImprovementsPanelProps
             onClick={addItem}
             disabled={items.length >= max}
           >
-            {items.length >= max ? `Máximo de ${max} itens` : "Adicionar item"}
+            {items.length >= max ? `Maximum of ${max} items` : "Add item"}
           </button>
-          <p className="improve-editor__note">As alterações ficam salvas neste navegador.</p>
+          <p className="improve-editor__note">Changes are saved in this browser.</p>
         </div>
       ) : (
         <ol className="improve-list">
           {items.map((item, index) => (
             <li key={index} className={`improve-row${item.trim() ? "" : " improve-row--empty"}`}>
               <span className="improve-row__index">{index + 1}</span>
-              <span className="improve-row__text">{item.trim() || "A definir"}</span>
+              <span className="improve-row__text">{item.trim() || "To be defined"}</span>
             </li>
           ))}
         </ol>

@@ -47,7 +47,7 @@ export function PlayerSpecificPanel({ playerId, min, max }: PlayerSpecificPanelP
         }
       }
     } catch {
-      // storage indisponível
+      // localStorage unavailable
     }
     setItems(normalize(emptyItems(min), min, max));
     setLoaded(true);
@@ -86,22 +86,22 @@ export function PlayerSpecificPanel({ playerId, min, max }: PlayerSpecificPanelP
             Player-Specific Indicators
           </h2>
           <p className="panel__hint">
-            {filled.length} de {items.length} preenchidos · {min} a {max} indicadores
+            {filled.length} of {items.length} filled · {min} to {max} indicators
           </p>
         </div>
         <div className="panel__actions">
           {editing ? (
             <>
               <button type="button" className="btn btn--ghost" onClick={resetItems}>
-                Limpar
+                Clear
               </button>
               <button type="button" className="btn btn--primary" onClick={() => setEditing(false)}>
-                Concluir
+                Done
               </button>
             </>
           ) : (
             <button type="button" className="btn btn--primary" onClick={() => setEditing(true)}>
-              Editar
+              Edit
             </button>
           )}
         </div>
@@ -117,17 +117,17 @@ export function PlayerSpecificPanel({ playerId, min, max }: PlayerSpecificPanelP
                   className="psi-row__input"
                   value={item.label}
                   maxLength={80}
-                  placeholder={`Indicador ${index + 1}`}
+                  placeholder={`Indicator ${index + 1}`}
                   onChange={(event) => updateItem(index, { label: event.target.value })}
-                  aria-label={`Nome do indicador ${index + 1}`}
+                  aria-label={`Indicator name ${index + 1}`}
                 />
                 <select
                   className="psi-row__select"
                   value={item.grade}
                   onChange={(event) => updateItem(index, { grade: event.target.value })}
-                  aria-label={`Nota do indicador ${index + 1}`}
+                  aria-label={`Indicator grade ${index + 1}`}
                 >
-                  <option value="">Sem nota</option>
+                  <option value="">Ungraded</option>
                   {GRADE_SCALE.map((grade) => (
                     <option key={grade} value={grade}>
                       {grade}
@@ -139,7 +139,7 @@ export function PlayerSpecificPanel({ playerId, min, max }: PlayerSpecificPanelP
                   className="btn btn--icon"
                   onClick={() => removeItem(index)}
                   disabled={items.length <= min}
-                  aria-label={`Remover indicador ${index + 1}`}
+                  aria-label={`Remove indicator ${index + 1}`}
                 >
                   ×
                 </button>
@@ -147,16 +147,16 @@ export function PlayerSpecificPanel({ playerId, min, max }: PlayerSpecificPanelP
             ))}
           </ol>
           <button type="button" className="btn btn--dashed" onClick={addItem} disabled={items.length >= max}>
-            {items.length >= max ? `Máximo de ${max} indicadores` : "Adicionar indicador"}
+            {items.length >= max ? `Maximum of ${max} indicators` : "Add indicator"}
           </button>
-          <p className="improve-editor__note">As alterações ficam salvas neste navegador.</p>
+          <p className="improve-editor__note">Changes are saved in this browser.</p>
         </div>
       ) : (
         <ol className="psi-list psi-list--read">
           {items.map((item, index) => (
             <li key={index} className={`psi-row psi-row--read${item.label.trim() || item.grade ? "" : " psi-row--empty"}`}>
               <span className="psi-row__index">{index + 1}</span>
-              <span className="psi-row__label">{item.label.trim() || "A definir"}</span>
+              <span className="psi-row__label">{item.label.trim() || "To be defined"}</span>
               <span className="psi-row__grade">{item.grade.trim() || "—"}</span>
             </li>
           ))}

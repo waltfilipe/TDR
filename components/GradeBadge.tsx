@@ -7,7 +7,7 @@ type GradeBadgeProps = {
 
 export function GradeBadge({ grade, fallbackColor }: GradeBadgeProps) {
   if (!grade) {
-    return <span className="badge badge--empty">Sem nota</span>;
+    return <span className="badge badge--empty">Ungraded</span>;
   }
 
   const color = gradeColor(grade, fallbackColor);

@@ -1,5 +1,5 @@
 import { AthleteProfileColumn } from "@/components/AthleteProfileColumn";
-import { GradeLegend } from "@/components/GradeLegend";
+import { GradeLegendTooltip } from "@/components/GradeLegendTooltip";
 import { ImprovementsPanel } from "@/components/ImprovementsPanel";
 import { IndicatorGrid } from "@/components/IndicatorGrid";
 import { PlayerSpecificPanel } from "@/components/PlayerSpecificPanel";
@@ -33,17 +33,19 @@ export function IdpReport({ report }: IdpReportProps) {
 
           <div className="report-stack">
             <section className="panel" aria-labelledby="technical-title">
-              <header className="panel__head">
+              <header className="panel__head panel__head--compact">
                 <div>
-                  <h2 id="technical-title" className="panel__title">
-                    Technical Indicators
-                  </h2>
-                  <p className="panel__hint">Avaliação técnica por fundamento</p>
+                  <div className="panel__title-row">
+                    <h2 id="technical-title" className="panel__title">
+                      Technical Indicators
+                    </h2>
+                    <GradeLegendTooltip />
+                  </div>
+                  <p className="panel__hint">Technical assessment by skill category</p>
                 </div>
-                <GradeLegend />
               </header>
               <IndicatorGrid
-                columns={2}
+                columns={4}
                 indicators={technicalGrades.map((entry) => ({
                   key: entry.field,
                   label: entry.field,
@@ -60,7 +62,7 @@ export function IdpReport({ report }: IdpReportProps) {
         </main>
 
         <footer className="footer">
-          Fonte: {meta.source} · SGA Performance
+          Source: {meta.source} · SGA Performance
         </footer>
       </div>
     </>
