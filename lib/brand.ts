@@ -22,6 +22,7 @@ export const SGA_FONTS = {
 export const BRAND = {
   name: "SGA Performance",
   legal: "Soccer Growth Analytics",
+  slogan: "Greatness Can Be Achieved",
   logos: {
     horizontal: "/brand/sga-logo-horizontal.png",
     vertical: "/brand/sga-logo-vertical.png",

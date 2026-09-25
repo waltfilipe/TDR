@@ -5,6 +5,7 @@ import { IndicatorGrid } from "@/components/IndicatorGrid";
 import { PlayerSpecificPanel } from "@/components/PlayerSpecificPanel";
 import { SgaBrand } from "@/components/SgaBrand";
 import { SgaCornerBrand } from "@/components/SgaCornerBrand";
+import { BRAND } from "@/lib/brand";
 import { orderTechnicalGrades, type IdpReport as IdpReportData } from "@/lib/report";
 
 type IdpReportProps = {
@@ -63,6 +64,7 @@ export function IdpReport({ report }: IdpReportProps) {
         </main>
 
         <footer className="footer">
+          <p className="footer__slogan">{BRAND.slogan}</p>
           <p className="footer__rights">All rights reserved.</p>
         </footer>
       </div>

@@ -1,21 +1,38 @@
-# IDP Report (Vercel)
+# Training Development Report (Vercel)
 
-Site de **página única** com o relatório de desenvolvimento individual (IDP), alimentado pelos dados do arquivo `Modelo - IDP v2.pbix` e no mesmo espírito do deploy Next.js do repositório `sada-test`.
+Single-page site for the SGA individual development report (IDP), fed by data from
+`Modelo - IDP v2.pbix` and deployed on Vercel.
 
-## Conteúdo da página
+## Page content
 
-- **Cabeçalho do atleta** — nome, posição, clube, nascimento, idade, altura e links externos
-- **Performance Indicators** — notas técnicas com escala visual de 4 níveis e legenda
-- **Player-Specific Indicators** — indicadores específicos do atleta
-- **Need to Improve** — de 4 a 6 itens, **editáveis no próprio site** (persistidos no `localStorage` do navegador)
+- **Athlete column** — generic photo placeholder plus position, club, birth year and height
+- **Technical Indicators** — eight graded skills laid out as four columns of two, with a
+  hoverable **Grade key** tooltip instead of an inline legend
+- **Player-Specific Indicators** — 4 to 6 slots, empty by default and **editable in the page**
+- **Need to Improve** — 4 to 6 slots, empty by default and **editable in the page**
+
+Both editable panels persist to `localStorage` per player, so edits stay in the browser
+where they were made and can be cleared with **Clear** / **Reset**.
+
+## Brand
+
+Visual tokens follow the SGA brand manual (2023):
+
+- Institutional colors: `#072334`, `#297cc1`, `#044f80`, `#ffffff` — every surface tone is
+  mixed from these four
+- Typography: **Source Sans 3** for the interface (Trebuchet MS fallback), **Good Times**
+  reserved for the logo and the slogan
+- The fixed bottom-left mark keeps a clear safety area, with the white stripe outside it
+
+Tokens live in `lib/brand.ts` and are mirrored by CSS custom properties in `app/globals.css`.
 
 ## Stack
 
-- Next.js 15 (App Router), layout responsivo próprio (sem imagem de fundo do Power BI)
-- Dados estáticos em `data/report.json` gerados a partir do `.pbix`
-- Deploy na Vercel via `vercel.json` (`framework: nextjs`)
+- Next.js 15 (App Router), custom responsive layout
+- Static data in `data/report.json`, generated from the `.pbix`
+- Vercel deploy via `vercel.json` (`framework: nextjs`)
 
-## Desenvolvimento local
+## Local development
 
 ```bash
 pip install pbixray
@@ -24,29 +41,34 @@ npm run build:data
 npm run dev
 ```
 
-Abra [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000).
 
-## Atualizar dados do Power BI
+## Refreshing Power BI data
 
-1. Substitua ou edite `Modelo - IDP v2.pbix` na raiz do repositório.
-2. Rode `npm run build:data` (opcional: passe o nome do jogador como argumento, ex. `python3 scripts/build_site_data.py "Player Name"`).
-3. Commit de `data/report.json`.
+1. Replace or edit `Modelo - IDP v2.pbix` at the repository root.
+2. Run `npm run build:data` (optionally pass a player name, e.g.
+   `python3 scripts/build_site_data.py "Player Name"`).
+3. Commit `data/report.json`.
 
-Os itens de **Need to Improve** vindos do PBIX são o padrão da página; a edição feita no site fica apenas no navegador de quem editou e pode ser desfeita com o botão **Restaurar**.
+The exporter writes a template athlete (placeholder name and empty profile fields) and
+leaves the editable panels empty; only the technical grades come from the PBIX.
 
-## Deploy na Vercel
+## Vercel deploy
 
-1. Importe o repositório no dashboard da Vercel.
-2. Framework detectado: **Next.js**.
-3. Build command: `npm run build` (opcional: `npm run build:data && npm run build` se quiser regenerar JSON no CI).
-4. Output: padrão do Next.js.
+1. Import the repository in the Vercel dashboard.
+2. Framework detected: **Next.js**.
+3. Build command: `npm run build` (or `npm run build:data && npm run build` to regenerate
+   the JSON in CI).
+4. Output: Next.js default.
 
-## Estrutura
+## Structure
 
-- `app/page.tsx` — rota única (`/`)
-- `app/globals.css` — design system (cores, cards, badges, responsivo, estilos de impressão)
-- `components/IdpReport.tsx` — montagem das seções
-- `components/ImprovementsPanel.tsx` — edição dos itens de Need to Improve
-- `components/GradeBadge.tsx`, `IndicatorGrid.tsx`, `GradeLegend.tsx` — notas e indicadores
-- `lib/report.ts` — tipos e escala de notas
-- `scripts/build_site_data.py` — exportação do PBIX para JSON
+- `app/page.tsx` — single route (`/`)
+- `app/globals.css` — design system (brand tokens, cards, badges, responsive, print)
+- `components/IdpReport.tsx` — section assembly
+- `components/ImprovementsPanel.tsx`, `PlayerSpecificPanel.tsx` — editable panels
+- `components/GradeBadge.tsx`, `IndicatorGrid.tsx`, `GradeLegendTooltip.tsx` — grades
+- `components/SgaBrand.tsx`, `SgaCornerBrand.tsx`, `SgaLogo.tsx` — logo usage
+- `lib/brand.ts` — brand palette, fonts and logo assets
+- `lib/report.ts` — types, grade scale and indicator display order
+- `scripts/build_site_data.py` — PBIX to JSON export

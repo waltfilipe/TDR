@@ -1,4 +1,5 @@
 import { GradeBadge } from "@/components/GradeBadge";
+import { gradeColor } from "@/lib/report";
 
 type Indicator = {
   key: string;
@@ -34,7 +35,15 @@ export function IndicatorGrid({
       style={colClass ? undefined : { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
     >
       {indicators.map((indicator) => (
-        <li key={indicator.key} className="indicator">
+        <li
+          key={indicator.key}
+          className="indicator"
+          style={
+            indicator.grade
+              ? { ["--indicator-color" as string]: gradeColor(indicator.grade, indicator.color) }
+              : undefined
+          }
+        >
           <span className="indicator__label">{indicator.label}</span>
           <GradeBadge grade={indicator.grade} fallbackColor={indicator.color} />
         </li>
