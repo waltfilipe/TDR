@@ -12,6 +12,18 @@ export type PsiEntry = GradeEntry & {
   label: string;
 };
 
+/** Display order: fill columns top-to-bottom (4 columns × 2 rows). */
+export const TECHNICAL_INDICATOR_ORDER = [
+  "Link-Up Play (Lay-offs)",
+  "Final Pass",
+  "Ball Protection",
+  "Finishing Touches",
+  "Finishing",
+  "Heading",
+  "Pressing Triggers",
+  "Defensive Positioning",
+] as const;
+
 export type IdpReport = {
   meta: {
     source: string;
@@ -50,6 +62,24 @@ export function gradeLevel(grade: string): number {
 
 export function gradeColor(grade: string, fallback: string): string {
   return GRADE_TOKENS[grade as GradeName]?.color ?? fallback;
+}
+
+export function orderTechnicalGrades(grades: GradeEntry[]): GradeEntry[] {
+  const byField = new Map(grades.map((entry) => [entry.field, entry]));
+  const ordered: GradeEntry[] = [];
+
+  for (const field of TECHNICAL_INDICATOR_ORDER) {
+    const entry = byField.get(field);
+    if (entry) ordered.push(entry);
+  }
+
+  for (const entry of grades) {
+    if (!TECHNICAL_INDICATOR_ORDER.includes(entry.field as (typeof TECHNICAL_INDICATOR_ORDER)[number])) {
+      ordered.push(entry);
+    }
+  }
+
+  return ordered;
 }
 
 export function getReport(): IdpReport {

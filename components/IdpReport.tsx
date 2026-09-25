@@ -5,7 +5,7 @@ import { IndicatorGrid } from "@/components/IndicatorGrid";
 import { PlayerSpecificPanel } from "@/components/PlayerSpecificPanel";
 import { SgaBrand } from "@/components/SgaBrand";
 import { SgaCornerBrand } from "@/components/SgaCornerBrand";
-import type { IdpReport as IdpReportData } from "@/lib/report";
+import { orderTechnicalGrades, type IdpReport as IdpReportData } from "@/lib/report";
 
 type IdpReportProps = {
   report: IdpReportData;
@@ -46,7 +46,8 @@ export function IdpReport({ report }: IdpReportProps) {
               </header>
               <IndicatorGrid
                 columns={4}
-                indicators={technicalGrades.map((entry) => ({
+                columnPairs
+                indicators={orderTechnicalGrades(technicalGrades).map((entry) => ({
                   key: entry.field,
                   label: entry.field,
                   grade: entry.grade,
