@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ReportPdfSheet } from "@/components/ReportPdfSheet";
-import { exportElementToPdf } from "@/lib/exportPdf";
+import { exportSheetToPdf } from "@/lib/exportPdf";
 import { loadReportSnapshot } from "@/lib/reportSnapshot";
 import type { IdpReport } from "@/lib/report";
 
@@ -43,7 +43,7 @@ export function ReportActionsBar({ playerId, report }: ReportActionsBarProps) {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
 
-      await exportElementToPdf(sheet, `training-development-report-${safeName || "export"}.pdf`);
+      await exportSheetToPdf(sheet, `training-development-report-${safeName || "export"}.pdf`);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "PDF export failed.");
     } finally {

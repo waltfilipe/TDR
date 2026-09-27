@@ -1,35 +1,66 @@
-export async function exportElementToPdf(element: HTMLElement, filename: string): Promise<void> {
+async function waitForImages(element: HTMLElement): Promise<void> {
+  const images = Array.from(element.querySelectorAll("img"));
+  await Promise.all(
+    images.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          if (img.complete && img.naturalWidth > 0) {
+            resolve();
+            return;
+          }
+          img.addEventListener("load", () => resolve(), { once: true });
+          img.addEventListener("error", () => resolve(), { once: true });
+        }),
+    ),
+  );
+}
+
+/**
+ * Rasterizes the report sheet at print resolution and fits it on a single A4
+ * page, re-attaching clickable link annotations on top of the image.
+ */
+export async function exportSheetToPdf(element: HTMLElement, filename: string): Promise<void> {
   const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import("html2canvas"), import("jspdf")]);
 
+  await waitForImages(element);
+  if (document.fonts?.ready) {
+    await document.fonts.ready;
+  }
+
+  const sheetRect = element.getBoundingClientRect();
+  const links = Array.from(element.querySelectorAll<HTMLElement>("[data-pdf-link]"))
+    .map((node) => ({ url: node.dataset.pdfLink ?? "", rect: node.getBoundingClientRect() }))
+    .filter((link) => link.url);
+
   const canvas = await html2canvas(element, {
-    scale: 2,
+    scale: 3,
     useCORS: true,
     backgroundColor: "#ffffff",
     logging: false,
     windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight,
   });
 
-  const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
-  const margin = 10;
-  const printableHeight = pageHeight - margin * 2;
 
-  const imgWidth = pageWidth - margin * 2;
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  const imgData = canvas.toDataURL("image/png");
+  const scale = Math.min(pageWidth / sheetRect.width, pageHeight / sheetRect.height);
+  const imageWidth = sheetRect.width * scale;
+  const imageHeight = sheetRect.height * scale;
+  const offsetX = (pageWidth - imageWidth) / 2;
+  const offsetY = (pageHeight - imageHeight) / 2;
 
-  let heightLeft = imgHeight;
-  let position = margin;
+  pdf.addImage(canvas.toDataURL("image/png"), "PNG", offsetX, offsetY, imageWidth, imageHeight);
 
-  pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-  heightLeft -= printableHeight;
-
-  while (heightLeft > 0) {
-    position = margin - (imgHeight - heightLeft);
-    pdf.addPage();
-    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-    heightLeft -= printableHeight;
+  for (const link of links) {
+    pdf.link(
+      offsetX + (link.rect.left - sheetRect.left) * scale,
+      offsetY + (link.rect.top - sheetRect.top) * scale,
+      link.rect.width * scale,
+      link.rect.height * scale,
+      { url: link.url },
+    );
   }
 
   pdf.save(filename);

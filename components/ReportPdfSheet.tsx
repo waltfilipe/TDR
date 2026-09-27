@@ -9,142 +9,189 @@ type ReportPdfSheetProps = {
 };
 
 const PLACEHOLDER = "—";
+const ROWS_PER_COLUMN = 2;
 
 function text(value: string): string {
   return value.trim() || PLACEHOLDER;
 }
 
-function gradeStyle(grade: string): CSSProperties {
+function chipStyle(grade: string): CSSProperties {
   const color = gradeColor(grade, SGA_GRADE_COLORS.Average);
-  return {
-    color,
-    borderColor: color,
-    backgroundColor: `${color}22`,
-  };
+  return { color, borderColor: `${color}59`, backgroundColor: `${color}14` };
+}
+
+function linkLabel(url: string): string {
+  try {
+    const { hostname } = new URL(url);
+    return hostname.replace(/^www\./, "");
+  } catch {
+    return "Open";
+  }
+}
+
+function toColumns<T>(items: T[], rows: number): T[][] {
+  const columns: T[][] = [];
+  const total = Math.max(1, Math.ceil(items.length / rows));
+  for (let column = 0; column < total; column += 1) {
+    const slice = items.slice(column * rows, column * rows + rows);
+    if (slice.length) columns.push(slice);
+  }
+  return columns;
 }
 
 export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
   const { athlete, technical, psi, improvements } = snapshot;
   const name = athlete.name.trim() || "Athlete Name";
+  const issued = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 
-  const technicalColumns: { field: string; grade: string }[][] = [];
-  const rowCount = 2;
-  const columnCount = Math.max(1, Math.ceil(technical.length / rowCount));
-  for (let column = 0; column < columnCount; column += 1) {
-    const col: { field: string; grade: string }[] = [];
-    for (let row = 0; row < rowCount; row += 1) {
-      const entry = technical[column * rowCount + row];
-      if (entry) col.push(entry);
-    }
-    technicalColumns.push(col);
-  }
+  const technicalColumns = toColumns(technical, ROWS_PER_COLUMN);
+
+  const profileSpecs = [
+    { label: "Position", value: text(athlete.position) },
+    { label: "Club", value: text(athlete.club) },
+    { label: "Birth year", value: text(athlete.birthYear) },
+    { label: "Height", value: athlete.heightCm.trim() ? `${athlete.heightCm.trim()} cm` : PLACEHOLDER },
+  ];
 
   return (
     <article className="pdf-sheet" aria-hidden="true">
-      <header className="pdf-sheet__header">
-        <div>
-          <p className="pdf-sheet__eyebrow">{BRAND.legal}</p>
-          <h1 className="pdf-sheet__title">Training Development Report</h1>
+      <header className="pdf-head">
+        <div className="pdf-head__brand">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={BRAND.logos.horizontal} alt="" className="pdf-head__logo" />
         </div>
-        <p className="pdf-sheet__brand">{BRAND.name}</p>
+        <div className="pdf-head__titles">
+          <p className="pdf-head__eyebrow">{BRAND.legal}</p>
+          <h1 className="pdf-head__title">Training Development Report</h1>
+          <p className="pdf-head__issued">Issued {issued}</p>
+        </div>
       </header>
 
-      <section className="pdf-sheet__profile">
-        <div className="pdf-sheet__photo">
-          {athlete.photoDataUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={athlete.photoDataUrl} alt="" />
-          ) : (
-            <div className="pdf-sheet__photo-placeholder" />
-          )}
-        </div>
-        <div className="pdf-sheet__profile-meta">
-          <h2>{name}</h2>
-          <dl>
-            <div>
-              <dt>Position</dt>
-              <dd>{text(athlete.position)}</dd>
-            </div>
-            <div>
-              <dt>Club</dt>
-              <dd>{text(athlete.club)}</dd>
-            </div>
-            <div>
-              <dt>Birth year</dt>
-              <dd>{text(athlete.birthYear)}</dd>
-            </div>
-            <div>
-              <dt>Height</dt>
-              <dd>{athlete.heightCm.trim() ? `${athlete.heightCm.trim()} cm` : PLACEHOLDER}</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
+      <div className="pdf-body">
+        <section className="pdf-profile">
+          {/* html2canvas ignores object-fit, so the crop is done with a background image. */}
+          <div
+            className={`pdf-profile__photo${athlete.photoDataUrl ? "" : " pdf-profile__photo--empty"}`}
+            style={athlete.photoDataUrl ? { backgroundImage: `url(${athlete.photoDataUrl})` } : undefined}
+          />
 
-      <section className="pdf-sheet__section">
-        <h3>Technical Indicators</h3>
-        <div className="pdf-sheet__tech-grid">
-          {technicalColumns.map((column, columnIndex) => (
-            <div key={columnIndex} className="pdf-sheet__tech-col">
-              {column.map((entry) => (
-                <div key={entry.field} className="pdf-sheet__tech-card">
-                  <span className="pdf-sheet__tech-label">{entry.field}</span>
-                  {entry.grade ? (
-                    <span className="pdf-sheet__grade" style={gradeStyle(entry.grade)}>
-                      {entry.grade}
-                    </span>
-                  ) : (
-                    <span className="pdf-sheet__grade pdf-sheet__grade--empty">Ungraded</span>
-                  )}
+          <div className="pdf-profile__info">
+            <p className="pdf-profile__label">Athlete</p>
+            <h2 className="pdf-profile__name">{name}</h2>
+            <dl className="pdf-specs">
+              {profileSpecs.map((spec) => (
+                <div key={spec.label} className="pdf-specs__item">
+                  <dt>{spec.label}</dt>
+                  <dd>{spec.value}</dd>
                 </div>
               ))}
-            </div>
-          ))}
-        </div>
-      </section>
+            </dl>
+          </div>
+        </section>
 
-      <section className="pdf-sheet__section">
-        <h3>Player-Specific Indicators</h3>
-        <table className="pdf-sheet__table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Indicator</th>
-              <th>Grade</th>
-              <th>Link</th>
-            </tr>
-          </thead>
-          <tbody>
+        <section className="pdf-section">
+          <div className="pdf-section__head">
+            <h3>Technical Indicators</h3>
+            <span className="pdf-section__rule" />
+          </div>
+          <div className="pdf-tech">
+            {technicalColumns.map((column, columnIndex) => (
+              <div key={columnIndex} className="pdf-tech__col">
+                {column.map((entry) => {
+                  const accent = entry.grade ? gradeColor(entry.grade, SGA_GRADE_COLORS.Average) : "#d8e2ec";
+                  return (
+                    <div key={entry.field} className="pdf-tech__card" style={{ borderLeftColor: accent }}>
+                      <span className="pdf-tech__label">{entry.field}</span>
+                      {entry.grade ? (
+                        <span className="pdf-chip" style={chipStyle(entry.grade)}>
+                          <span className="pdf-chip__dot" style={{ backgroundColor: accent }} />
+                          {entry.grade}
+                        </span>
+                      ) : (
+                        <span className="pdf-chip pdf-chip--empty">Ungraded</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="pdf-section">
+          <div className="pdf-section__head">
+            <h3>Player-Specific Indicators</h3>
+            <span className="pdf-section__rule" />
+          </div>
+          <div className="pdf-table">
+            <div className="pdf-table__head">
+              <span>#</span>
+              <span>Indicator</span>
+              <span>Grade</span>
+              <span>Reference</span>
+            </div>
             {psi.map((item, index) => {
               const url = normalizeHttpUrl(item.link);
               const hasLink = isValidHttpUrl(url);
+              const label = item.label.trim();
               return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{item.label.trim() || "To be defined"}</td>
-                  <td>{item.grade.trim() || PLACEHOLDER}</td>
-                  <td className="pdf-sheet__link-cell">
-                    {hasLink ? url : PLACEHOLDER}
-                  </td>
-                </tr>
+                <div key={index} className="pdf-table__row">
+                  <span className="pdf-index">{index + 1}</span>
+                  <span className={`pdf-table__name${label ? "" : " is-empty"}`}>{label || "To be defined"}</span>
+                  <span>
+                    {item.grade.trim() ? (
+                      <span className="pdf-chip" style={chipStyle(item.grade)}>
+                        <span
+                          className="pdf-chip__dot"
+                          style={{ backgroundColor: gradeColor(item.grade, SGA_GRADE_COLORS.Average) }}
+                        />
+                        {item.grade}
+                      </span>
+                    ) : (
+                      <span className="pdf-muted">{PLACEHOLDER}</span>
+                    )}
+                  </span>
+                  <span>
+                    {hasLink ? (
+                      <span className="pdf-link" data-pdf-link={url}>
+                        {linkLabel(url)}
+                      </span>
+                    ) : (
+                      <span className="pdf-muted">{PLACEHOLDER}</span>
+                    )}
+                  </span>
+                </div>
               );
             })}
-          </tbody>
-        </table>
-      </section>
+          </div>
+        </section>
 
-      <section className="pdf-sheet__section">
-        <h3>Need to Improve</h3>
-        <ol className="pdf-sheet__list">
-          {improvements.map((item, index) => (
-            <li key={index}>{item.trim() || "To be defined"}</li>
-          ))}
-        </ol>
-      </section>
+        <section className="pdf-section">
+          <div className="pdf-section__head">
+            <h3>Need to Improve</h3>
+            <span className="pdf-section__rule" />
+          </div>
+          <ol className="pdf-improve">
+            {improvements.map((item, index) => {
+              const value = item.trim();
+              return (
+                <li key={index} className="pdf-improve__row">
+                  <span className="pdf-index">{index + 1}</span>
+                  <span className={value ? undefined : "pdf-muted"}>{value || "To be defined"}</span>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      </div>
 
-      <footer className="pdf-sheet__footer">
-        <p>{BRAND.slogan}</p>
-        <p>All rights reserved.</p>
+      <footer className="pdf-foot">
+        <span className="pdf-foot__slogan">{BRAND.slogan}</span>
+        <span className="pdf-foot__rights">All rights reserved · {BRAND.name}</span>
       </footer>
     </article>
   );

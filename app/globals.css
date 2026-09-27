@@ -1178,212 +1178,380 @@ body::before {
   pointer-events: none;
 }
 
+/* The sheet is rasterised by html2canvas, so every value here stays literal
+   (no custom properties, no color-mix) and no paint-only effects are used. */
 .pdf-sheet {
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   width: 794px;
-  padding: 28px 32px 36px;
+  min-height: 1123px;
   background: #ffffff;
-  color: #072334;
+  color: #0d2c3f;
   font-family: "Source Sans 3", "Trebuchet MS", sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
-.pdf-sheet__header {
+.pdf-sheet *,
+.pdf-sheet *::before,
+.pdf-sheet *::after {
+  box-sizing: border-box;
+}
+
+/* ---- header band ---- */
+
+.pdf-head {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-end;
-  gap: 16px;
-  padding-bottom: 16px;
-  margin-bottom: 18px;
-  border-bottom: 2px solid #297cc1;
+  gap: 28px;
+  padding: 18px 46px 20px;
+  background: #072334;
+  border-bottom: 3px solid #297cc1;
 }
 
-.pdf-sheet__eyebrow {
-  margin: 0 0 4px;
-  font-size: 11px;
+.pdf-head__brand {
+  flex: 0 0 auto;
+}
+
+.pdf-head__logo {
+  display: block;
+  width: 178px;
+  height: auto;
+}
+
+.pdf-head__titles {
+  flex: 1 1 auto;
+  text-align: right;
+}
+
+.pdf-head__eyebrow {
+  margin: 0 0 6px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #297cc1;
+  color: #6fa8d8;
 }
 
-.pdf-sheet__title {
+.pdf-head__title {
   margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.pdf-sheet__brand {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #044f80;
-}
-
-.pdf-sheet__profile {
-  display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
-  gap: 18px;
-  margin-bottom: 22px;
-}
-
-.pdf-sheet__photo {
-  width: 160px;
-  height: 200px;
-  border: 1px solid #c7d6e8;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #eef4fa;
-}
-
-.pdf-sheet__photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.pdf-sheet__photo-placeholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(160deg, #d9e8f5, #eef4fa);
-}
-
-.pdf-sheet__profile-meta h2 {
-  margin: 0 0 12px;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.pdf-sheet__profile-meta dl {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 16px;
-  margin: 0;
-}
-
-.pdf-sheet__profile-meta dt {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #5a7185;
-}
-
-.pdf-sheet__profile-meta dd {
-  margin: 2px 0 0;
-  font-size: 14px;
-  font-weight: 650;
-}
-
-.pdf-sheet__section {
-  margin-bottom: 20px;
-}
-
-.pdf-sheet__section h3 {
-  margin: 0 0 10px;
-  font-size: 14px;
+  font-size: 21px;
   font-weight: 700;
   letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.pdf-head__issued {
+  margin: 8px 0 0;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #93aec3;
+}
+
+/* ---- body ---- */
+
+.pdf-body {
+  flex: 1 1 auto;
+  padding: 30px 46px 34px;
+}
+
+.pdf-profile {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding-bottom: 24px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid #e4ecf3;
+}
+
+.pdf-profile__photo {
+  width: 132px;
+  height: 172px;
+  border: 1px solid #dde7ef;
+  border-radius: 8px;
+  background-color: #f4f8fb;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.pdf-profile__photo--empty {
+  background-image: linear-gradient(160deg, #e8f0f7, #f7fafc);
+}
+
+.pdf-profile__info {
+  padding-top: 4px;
+}
+
+.pdf-profile__label {
+  margin: 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #8ea5b6;
+}
+
+.pdf-profile__name {
+  margin: 4px 0 20px;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #072334;
+}
+
+.pdf-specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 22px;
+  margin: 0;
+}
+
+.pdf-specs__item {
+  padding-left: 11px;
+  border-left: 2px solid #297cc1;
+}
+
+.pdf-specs__item dt {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8ea5b6;
+}
+
+.pdf-specs__item dd {
+  margin: 3px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #072334;
+}
+
+/* ---- sections ---- */
+
+.pdf-section {
+  margin-bottom: 24px;
+}
+
+.pdf-section:last-child {
+  margin-bottom: 0;
+}
+
+.pdf-section__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 13px;
+}
+
+.pdf-section__head h3 {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #044f80;
+  white-space: nowrap;
 }
 
-.pdf-sheet__tech-grid {
+.pdf-section__rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: #e4ecf3;
+}
+
+/* ---- technical indicators ---- */
+
+.pdf-tech {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
+  gap: 9px;
 }
 
-.pdf-sheet__tech-col {
+.pdf-tech__col {
   display: grid;
-  gap: 8px;
+  gap: 9px;
 }
 
-.pdf-sheet__tech-card {
+.pdf-tech__card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 8px;
-  min-height: 72px;
-  padding: 10px 10px 9px;
-  border: 1px solid #c7d6e8;
-  border-radius: 8px;
-  background: #f7fafc;
+  gap: 9px;
+  min-height: 68px;
+  padding: 10px 11px;
+  border: 1px solid #e4ecf3;
+  border-left: 3px solid #297cc1;
+  border-radius: 6px;
+  background: #fbfdfe;
 }
 
-.pdf-sheet__tech-label {
-  font-size: 11px;
-  font-weight: 650;
-  line-height: 1.25;
+.pdf-tech__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #0d2c3f;
 }
 
-.pdf-sheet__grade {
+/* ---- grade chips ---- */
+
+.pdf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   align-self: flex-start;
-  padding: 3px 8px;
-  border: 1px solid;
+  padding: 3px 9px 4px;
+  border: 1px solid #dde7ef;
   border-radius: 999px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pdf-chip__dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+}
+
+.pdf-chip--empty {
+  color: #9db1c0;
+  border-color: #e4ecf3;
+  background: #ffffff;
+}
+
+/* ---- player-specific table ---- */
+
+.pdf-table__head,
+.pdf-table__row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 104px 112px;
+  gap: 12px;
+  align-items: center;
+}
+
+.pdf-table__head {
+  padding-bottom: 9px;
+  border-bottom: 1px solid #dde7ef;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8ea5b6;
+}
+
+.pdf-table__row {
+  min-height: 34px;
+  padding: 7px 0;
+  border-bottom: 1px solid #eff4f8;
+}
+
+.pdf-table__row:last-child {
+  border-bottom: none;
+}
+
+.pdf-table__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0d2c3f;
+}
+
+.pdf-table__name.is-empty {
+  font-weight: 400;
+  font-style: italic;
+  color: #9db1c0;
+}
+
+.pdf-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #eef4fa;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.pdf-sheet__grade--empty {
-  border-color: #c7d6e8;
-  color: #5a7185;
-  background: #fff;
-}
-
-.pdf-sheet__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-.pdf-sheet__table th,
-.pdf-sheet__table td {
-  border: 1px solid #c7d6e8;
-  padding: 8px 10px;
-  text-align: left;
-  vertical-align: top;
-}
-
-.pdf-sheet__table th {
-  background: #eef4fa;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.pdf-sheet__link-cell {
-  font-size: 10px;
-  word-break: break-all;
   color: #044f80;
 }
 
-.pdf-sheet__list {
+.pdf-link {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  padding-bottom: 1px;
+  border-bottom: 1px solid #9cc4e3;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #044f80;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdf-muted {
+  font-size: 11px;
+  color: #9db1c0;
+}
+
+/* ---- need to improve ---- */
+
+.pdf-improve {
+  display: grid;
   margin: 0;
-  padding-left: 18px;
+  padding: 0;
+  list-style: none;
 }
 
-.pdf-sheet__list li {
-  margin-bottom: 6px;
+.pdf-improve__row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 0;
+  border-bottom: 1px solid #eff4f8;
+  font-size: 12px;
 }
 
-.pdf-sheet__footer {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid #c7d6e8;
-  text-align: center;
+.pdf-improve__row:last-child {
+  border-bottom: none;
+}
+
+/* ---- footer band ---- */
+
+.pdf-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 46px 15px;
+  background: #072334;
+  border-top: 3px solid #297cc1;
+}
+
+.pdf-foot__slogan {
+  font-family: "Good Times", "Source Sans 3", sans-serif;
   font-size: 10px;
-  color: #5a7185;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffffff;
 }
 
-.pdf-sheet__footer p {
-  margin: 0 0 4px;
+.pdf-foot__rights {
+  font-size: 8.5px;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: #93aec3;
 }
