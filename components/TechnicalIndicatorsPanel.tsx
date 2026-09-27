@@ -29,6 +29,7 @@ export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndica
   );
 
   const [grades, setGrades] = useState<Record<string, string>>(fallbackByField);
+  const [editing, setEditing] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -74,12 +75,25 @@ export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndica
             </h2>
             <GradeLegendTooltip />
           </div>
-          <p className="panel__hint">Change any grade from the dropdown — saved in this browser.</p>
+          <p className="panel__hint">
+            {editing ? "Edit grades below — changes save in this browser." : "View grades or use Edit to update."}
+          </p>
         </div>
         <div className="panel__actions no-print">
-          <button type="button" className="btn btn--ghost" onClick={resetGrades}>
-            Reset grades
-          </button>
+          {editing ? (
+            <>
+              <button type="button" className="btn btn--ghost" onClick={resetGrades}>
+                Reset
+              </button>
+              <button type="button" className="btn btn--primary" onClick={() => setEditing(false)}>
+                Done
+              </button>
+            </>
+          ) : (
+            <button type="button" className="btn btn--primary" onClick={() => setEditing(true)}>
+              Edit
+            </button>
+          )}
         </div>
       </header>
 
@@ -87,6 +101,8 @@ export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndica
         {ordered.map((entry) => {
           const grade = grades[entry.field] ?? "";
           const accent = grade ? gradeColor(grade, entry.color) : undefined;
+          const fallbackColor = colorByField[entry.field] ?? entry.color;
+
           return (
             <li
               key={entry.field}
@@ -95,22 +111,23 @@ export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndica
             >
               <span className="indicator__label">{entry.field}</span>
               <div className="indicator__grade-row">
-                <select
-                  className="indicator__select no-print"
-                  value={grade}
-                  aria-label={`Grade for ${entry.field}`}
-                  onChange={(event) => setGrade(entry.field, event.target.value)}
-                >
-                  <option value="">Ungraded</option>
-                  {GRADE_SCALE.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-                <span className="indicator__print-grade print-only">
-                  <GradeBadge grade={grade} fallbackColor={colorByField[entry.field] ?? entry.color} />
-                </span>
+                {editing ? (
+                  <select
+                    className="indicator__select"
+                    value={grade}
+                    aria-label={`Grade for ${entry.field}`}
+                    onChange={(event) => setGrade(entry.field, event.target.value)}
+                  >
+                    <option value="">Ungraded</option>
+                    {GRADE_SCALE.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <GradeBadge grade={grade} fallbackColor={fallbackColor} />
+                )}
               </div>
             </li>
           );

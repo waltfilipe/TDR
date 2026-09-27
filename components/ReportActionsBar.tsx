@@ -1,130 +1,75 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { createRoot } from "react-dom/client";
+import { ReportPdfSheet } from "@/components/ReportPdfSheet";
+import { exportElementToPdf } from "@/lib/exportPdf";
+import { loadReportSnapshot } from "@/lib/reportSnapshot";
+import type { IdpReport } from "@/lib/report";
 
 type ReportActionsBarProps = {
   playerId: number;
+  report: IdpReport;
 };
 
-function normalizeDriveUrl(raw: string): string {
-  const trimmed = raw.trim();
-  if (!trimmed) return "";
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return `https://${trimmed}`;
-}
+export function ReportActionsBar({ playerId, report }: ReportActionsBarProps) {
+  const [exporting, setExporting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-function isValidHttpUrl(value: string): boolean {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
+  const exportPdf = async () => {
+    setError(null);
+    setExporting(true);
 
-export function ReportActionsBar({ playerId }: ReportActionsBarProps) {
-  const storageKey = `idp:drive-link:${playerId}`;
-  const [input, setInput] = useState("");
-  const [savedUrl, setSavedUrl] = useState("");
-  const [loaded, setLoaded] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+    const host = document.createElement("div");
+    host.className = "pdf-sheet-host";
+    document.body.appendChild(host);
 
-  useEffect(() => {
+    const snapshot = loadReportSnapshot(playerId, report, report.meta.improvementLimits);
+    const root = createRoot(host);
+
     try {
-      const stored = window.localStorage.getItem(storageKey);
-      if (typeof stored === "string") {
-        setInput(stored);
-        setSavedUrl(stored);
+      root.render(<ReportPdfSheet snapshot={snapshot} />);
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      });
+
+      const sheet = host.querySelector(".pdf-sheet");
+      if (!(sheet instanceof HTMLElement)) {
+        throw new Error("Could not prepare the PDF layout.");
       }
-    } catch {
-      // ignore
-    }
-    setLoaded(true);
-  }, [storageKey]);
 
-  useEffect(() => {
-    if (!loaded) return;
-    try {
-      window.localStorage.setItem(storageKey, savedUrl);
-    } catch {
-      // ignore
-    }
-  }, [savedUrl, loaded, storageKey]);
+      const safeName = (snapshot.athlete.name.trim() || "athlete")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
 
-  const saveLink = () => {
-    setMessage(null);
-    const normalized = normalizeDriveUrl(input);
-    if (!normalized) {
-      setSavedUrl("");
-      setMessage("Link cleared.");
-      return;
+      await exportElementToPdf(sheet, `training-development-report-${safeName || "export"}.pdf`);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "PDF export failed.");
+    } finally {
+      root.unmount();
+      host.remove();
+      setExporting(false);
     }
-    if (!isValidHttpUrl(normalized)) {
-      setMessage("Enter a valid link (https://…).");
-      return;
-    }
-    setSavedUrl(normalized);
-    setInput(normalized);
-    setMessage("Google Drive link saved.");
-  };
-
-  const exportPdf = () => {
-    window.print();
   };
 
   return (
-    <section className="panel report-actions no-print" aria-labelledby="report-actions-title">
+    <section className="panel report-actions" aria-labelledby="report-actions-title">
       <header className="panel__head panel__head--compact">
         <div>
           <h2 id="report-actions-title" className="panel__title">
-            Report actions
+            Export
           </h2>
-          <p className="panel__hint">Attach a Google Drive folder or file, then export a PDF copy.</p>
+          <p className="panel__hint">
+            Generates a clean PDF from your saved report data (not a screenshot of this screen).
+          </p>
         </div>
       </header>
 
-      <div className="report-actions__grid">
-        <div className="report-actions__drive">
-          <label className="report-actions__label" htmlFor="drive-link-input">
-            Google Drive link
-          </label>
-          <div className="report-actions__row">
-            <input
-              id="drive-link-input"
-              className="report-actions__input"
-              type="url"
-              inputMode="url"
-              placeholder="https://drive.google.com/…"
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-            />
-            <button type="button" className="btn btn--primary" onClick={saveLink}>
-              Save link
-            </button>
-            <a
-              className={`btn btn--ghost${savedUrl ? "" : " is-disabled"}`}
-              href={savedUrl || undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-disabled={!savedUrl}
-              onClick={(event) => {
-                if (!savedUrl) event.preventDefault();
-              }}
-            >
-              Open Drive
-            </a>
-          </div>
-          {message ? <p className="report-actions__note">{message}</p> : null}
-        </div>
-
-        <div className="report-actions__export">
-          <p className="report-actions__label">Export</p>
-          <button type="button" className="btn btn--primary btn--block" onClick={exportPdf}>
-            Export report to PDF
-          </button>
-          <p className="report-actions__note">Uses your browser print dialog — choose “Save as PDF”.</p>
-        </div>
-      </div>
+      <button type="button" className="btn btn--primary btn--block" disabled={exporting} onClick={() => void exportPdf()}>
+        {exporting ? "Building PDF…" : "Export report to PDF"}
+      </button>
+      {error ? <p className="report-actions__note report-actions__note--error">{error}</p> : null}
     </section>
   );
 }
