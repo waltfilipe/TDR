@@ -31,6 +31,9 @@ export async function exportSheetToPdf(element: HTMLElement, filename: string): 
   const links = Array.from(element.querySelectorAll<HTMLElement>("[data-pdf-link]"))
     .map((node) => ({ url: node.dataset.pdfLink ?? "", rect: node.getBoundingClientRect() }))
     .filter((link) => link.url);
+  const bands = Array.from(element.querySelectorAll<HTMLElement>("[data-pdf-bleed]"))
+    .map((node) => ({ color: node.dataset.pdfBleed ?? "", rect: node.getBoundingClientRect() }))
+    .filter((band) => band.color);
 
   const canvas = await html2canvas(element, {
     scale: 3,
@@ -50,6 +53,14 @@ export async function exportSheetToPdf(element: HTMLElement, filename: string): 
   const imageHeight = sheetRect.height * scale;
   const offsetX = (pageWidth - imageWidth) / 2;
   const offsetY = (pageHeight - imageHeight) / 2;
+
+  // A sheet taller than A4 is scaled down, which would leave white gutters beside
+  // the banded rows. Painting the bands edge to edge first keeps them full bleed;
+  // the opaque sheet image then covers everything but the gutters.
+  for (const band of bands) {
+    pdf.setFillColor(band.color);
+    pdf.rect(0, offsetY + (band.rect.top - sheetRect.top) * scale, pageWidth, band.rect.height * scale, "F");
+  }
 
   pdf.addImage(canvas.toDataURL("image/png"), "PNG", offsetX, offsetY, imageWidth, imageHeight);
 

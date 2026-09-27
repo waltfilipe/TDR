@@ -28,6 +28,11 @@ export const BRAND = {
     vertical: "/brand/sga-logo-vertical.png",
     symbol: "/brand/sga-logo-symbol.png",
   },
+  /**
+   * Horizontal lockup with the transparent margin cropped off. The padded
+   * asset cannot be optically centered inside a tight band.
+   */
+  logoTrimmed: "/brand/sga-logo-horizontal-trim.png",
 } as const;
 
 export type LogoVariant = keyof typeof BRAND.logos;

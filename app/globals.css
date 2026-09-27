@@ -1206,9 +1206,14 @@ body::before {
   align-items: center;
   justify-content: space-between;
   gap: 28px;
-  padding: 18px 46px 20px;
+  padding: 24px 46px 26px;
   background: #072334;
-  border-bottom: 3px solid #297cc1;
+}
+
+.pdf-rule {
+  flex: 0 0 auto;
+  height: 3px;
+  background: #297cc1;
 }
 
 .pdf-head__brand {
@@ -1217,8 +1222,8 @@ body::before {
 
 .pdf-head__logo {
   display: block;
-  width: 178px;
-  height: auto;
+  width: 152px;
+  height: 62px;
 }
 
 .pdf-head__titles {
@@ -1264,16 +1269,20 @@ body::before {
 .pdf-profile {
   display: grid;
   grid-template-columns: 132px minmax(0, 1fr);
-  gap: 24px;
+  gap: 26px;
   align-items: start;
-  padding-bottom: 24px;
-  margin-bottom: 26px;
+  padding-bottom: 28px;
+  margin-bottom: 30px;
   border-bottom: 1px solid #e4ecf3;
 }
 
 .pdf-profile__photo {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   width: 132px;
-  height: 172px;
+  height: 168px;
+  padding-bottom: 12px;
   border: 1px solid #dde7ef;
   border-radius: 8px;
   background-color: #f4f8fb;
@@ -1283,7 +1292,15 @@ body::before {
 }
 
 .pdf-profile__photo--empty {
-  background-image: linear-gradient(160deg, #e8f0f7, #f7fafc);
+  background-image: linear-gradient(160deg, #e8f0f7, #f9fbfd);
+}
+
+.pdf-profile__photo--empty span {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #a9bccb;
 }
 
 .pdf-profile__info {
@@ -1338,7 +1355,7 @@ body::before {
 /* ---- sections ---- */
 
 .pdf-section {
-  margin-bottom: 24px;
+  margin-bottom: 30px;
 }
 
 .pdf-section:last-child {
@@ -1453,13 +1470,21 @@ body::before {
 }
 
 .pdf-table__row {
-  min-height: 34px;
-  padding: 7px 0;
+  min-height: 38px;
+  padding: 8px 0;
   border-bottom: 1px solid #eff4f8;
 }
 
 .pdf-table__row:last-child {
   border-bottom: none;
+}
+
+/* Flex cells keep chips and links on one optical line: an inline-block with
+   overflow hidden aligns its bottom edge to the baseline, not its text. */
+.pdf-table__cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
 }
 
 .pdf-table__name {
@@ -1519,8 +1544,8 @@ body::before {
   grid-template-columns: 20px minmax(0, 1fr);
   gap: 12px;
   align-items: center;
-  min-height: 34px;
-  padding: 7px 0;
+  min-height: 38px;
+  padding: 8px 0;
   border-bottom: 1px solid #eff4f8;
   font-size: 12px;
 }
@@ -1538,7 +1563,6 @@ body::before {
   gap: 20px;
   padding: 14px 46px 15px;
   background: #072334;
-  border-top: 3px solid #297cc1;
 }
 
 .pdf-foot__slogan {

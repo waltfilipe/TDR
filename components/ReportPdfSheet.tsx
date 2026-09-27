@@ -59,10 +59,10 @@ export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
 
   return (
     <article className="pdf-sheet" aria-hidden="true">
-      <header className="pdf-head">
+      <header className="pdf-head" data-pdf-bleed="#072334">
         <div className="pdf-head__brand">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={BRAND.logos.horizontal} alt="" className="pdf-head__logo" />
+          <img src={BRAND.logoTrimmed} alt="" className="pdf-head__logo" />
         </div>
         <div className="pdf-head__titles">
           <p className="pdf-head__eyebrow">{BRAND.legal}</p>
@@ -70,6 +70,7 @@ export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
           <p className="pdf-head__issued">Issued {issued}</p>
         </div>
       </header>
+      <div className="pdf-rule" data-pdf-bleed="#297cc1" />
 
       <div className="pdf-body">
         <section className="pdf-profile">
@@ -77,7 +78,9 @@ export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
           <div
             className={`pdf-profile__photo${athlete.photoDataUrl ? "" : " pdf-profile__photo--empty"}`}
             style={athlete.photoDataUrl ? { backgroundImage: `url(${athlete.photoDataUrl})` } : undefined}
-          />
+          >
+            {athlete.photoDataUrl ? null : <span>No photo</span>}
+          </div>
 
           <div className="pdf-profile__info">
             <p className="pdf-profile__label">Athlete</p>
@@ -142,7 +145,7 @@ export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
                 <div key={index} className="pdf-table__row">
                   <span className="pdf-index">{index + 1}</span>
                   <span className={`pdf-table__name${label ? "" : " is-empty"}`}>{label || "To be defined"}</span>
-                  <span>
+                  <span className="pdf-table__cell">
                     {item.grade.trim() ? (
                       <span className="pdf-chip" style={chipStyle(item.grade)}>
                         <span
@@ -155,7 +158,7 @@ export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
                       <span className="pdf-muted">{PLACEHOLDER}</span>
                     )}
                   </span>
-                  <span>
+                  <span className="pdf-table__cell">
                     {hasLink ? (
                       <span className="pdf-link" data-pdf-link={url}>
                         {linkLabel(url)}
@@ -189,7 +192,8 @@ export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
         </section>
       </div>
 
-      <footer className="pdf-foot">
+      <div className="pdf-rule" data-pdf-bleed="#297cc1" />
+      <footer className="pdf-foot" data-pdf-bleed="#072334">
         <span className="pdf-foot__slogan">{BRAND.slogan}</span>
         <span className="pdf-foot__rights">All rights reserved · {BRAND.name}</span>
       </footer>
