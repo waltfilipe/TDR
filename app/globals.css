@@ -819,10 +819,6 @@ body::before {
   background: var(--surface-sunken);
 }
 
-.psi-row--read {
-  justify-content: space-between;
-}
-
 .psi-row__index {
   display: grid;
   place-items: center;
