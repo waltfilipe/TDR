@@ -1,12 +1,12 @@
 import { AthleteProfileColumn } from "@/components/AthleteProfileColumn";
-import { GradeLegendTooltip } from "@/components/GradeLegendTooltip";
 import { ImprovementsPanel } from "@/components/ImprovementsPanel";
-import { IndicatorGrid } from "@/components/IndicatorGrid";
 import { PlayerSpecificPanel } from "@/components/PlayerSpecificPanel";
+import { ReportActionsBar } from "@/components/ReportActionsBar";
 import { SgaBrand } from "@/components/SgaBrand";
 import { SgaCornerBrand } from "@/components/SgaCornerBrand";
+import { TechnicalIndicatorsPanel } from "@/components/TechnicalIndicatorsPanel";
 import { BRAND } from "@/lib/brand";
-import { orderTechnicalGrades, type IdpReport as IdpReportData } from "@/lib/report";
+import type { IdpReport as IdpReportData } from "@/lib/report";
 
 type IdpReportProps = {
   report: IdpReportData;
@@ -30,36 +30,16 @@ export function IdpReport({ report }: IdpReportProps) {
         </header>
 
         <main className="report-grid">
-          <AthleteProfileColumn player={player} />
+          <AthleteProfileColumn playerId={player.id} player={player} />
 
           <div className="report-stack">
-            <section className="panel" aria-labelledby="technical-title">
-              <header className="panel__head panel__head--compact">
-                <div>
-                  <div className="panel__title-row">
-                    <h2 id="technical-title" className="panel__title">
-                      Technical Indicators
-                    </h2>
-                    <GradeLegendTooltip />
-                  </div>
-                  <p className="panel__hint">Technical assessment by skill category</p>
-                </div>
-              </header>
-              <IndicatorGrid
-                columns={4}
-                columnPairs
-                indicators={orderTechnicalGrades(technicalGrades).map((entry) => ({
-                  key: entry.field,
-                  label: entry.field,
-                  grade: entry.grade,
-                  color: entry.color,
-                }))}
-              />
-            </section>
+            <TechnicalIndicatorsPanel playerId={player.id} defaults={technicalGrades} />
 
             <PlayerSpecificPanel playerId={player.id} min={min} max={max} />
 
             <ImprovementsPanel playerId={player.id} min={min} max={max} />
+
+            <ReportActionsBar playerId={player.id} />
           </div>
         </main>
 
