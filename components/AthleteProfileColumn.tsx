@@ -48,6 +48,8 @@ export function AthleteProfileColumn({ playerId, player }: AthleteProfileColumnP
   const [editing, setEditing] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [pendingPhoto, setPendingPhoto] = useState<string | null>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
 
   useEffect(() => {
     try {
@@ -83,19 +85,45 @@ export function AthleteProfileColumn({ playerId, player }: AthleteProfileColumnP
 
   const update = (patch: Partial<AthleteDraft>) => setDraft((current) => ({ ...current, ...patch }));
 
+  const displayPhoto = pendingPhoto ?? draft.photoDataUrl;
+  const hasSavedPhoto = Boolean(draft.photoDataUrl);
+  const isPhotoPending = pendingPhoto !== null;
+
   const onPhotoSelected = async (file: File | undefined) => {
     if (!file) return;
     setPhotoError(null);
+    setPhotoBusy(true);
     try {
       const dataUrl = await fileToCompressedDataUrl(file);
-      update({ photoDataUrl: dataUrl });
+      setPendingPhoto(dataUrl);
     } catch (error) {
-      setPhotoError(error instanceof Error ? error.message : "Could not upload photo.");
+      setPhotoError(error instanceof Error ? error.message : "Could not load photo.");
+    } finally {
+      setPhotoBusy(false);
     }
+  };
+
+  const savePhoto = () => {
+    if (!pendingPhoto) return;
+    update({ photoDataUrl: pendingPhoto });
+    setPendingPhoto(null);
+    setPhotoError(null);
+  };
+
+  const cancelPhoto = () => {
+    setPendingPhoto(null);
+    setPhotoError(null);
+  };
+
+  const removePhoto = () => {
+    setPendingPhoto(null);
+    update({ photoDataUrl: null });
+    setPhotoError(null);
   };
 
   const resetProfile = () => {
     setDraft(emptyDraft(player));
+    setPendingPhoto(null);
     setPhotoError(null);
   };
 
@@ -111,19 +139,23 @@ export function AthleteProfileColumn({ playerId, player }: AthleteProfileColumnP
 
   return (
     <aside className="athlete-column" aria-label="Athlete profile">
-      <div className="athlete-photo">
-        {draft.photoDataUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={draft.photoDataUrl} alt="" className="athlete-photo__img" />
-        ) : (
-          <div className="athlete-photo__placeholder athlete-photo__placeholder--generic" aria-hidden="true">
-            <svg viewBox="0 0 64 64" className="athlete-photo__icon" focusable="false">
-              <circle cx="32" cy="22" r="12" fill="currentColor" opacity="0.35" />
-              <path d="M12 58c4-14 16-22 20-22s16 8 20 22" fill="currentColor" opacity="0.25" />
-            </svg>
-          </div>
-        )}
-        <div className="athlete-photo__actions no-print">
+      <div className="athlete-photo-block">
+        <div className={`athlete-photo${isPhotoPending ? " athlete-photo--pending" : ""}`}>
+          {displayPhoto ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={displayPhoto} alt="" className="athlete-photo__img" />
+          ) : (
+            <div className="athlete-photo__placeholder athlete-photo__placeholder--generic" aria-hidden="true">
+              <svg viewBox="0 0 64 64" className="athlete-photo__icon" focusable="false">
+                <circle cx="32" cy="22" r="12" fill="currentColor" opacity="0.35" />
+                <path d="M12 58c4-14 16-22 20-22s16 8 20 22" fill="currentColor" opacity="0.25" />
+              </svg>
+            </div>
+          )}
+          {isPhotoPending ? <span className="athlete-photo__badge no-print">Preview</span> : null}
+        </div>
+
+        <div className="athlete-photo__toolbar no-print">
           <input
             ref={fileInputRef}
             type="file"
@@ -134,15 +166,38 @@ export function AthleteProfileColumn({ playerId, player }: AthleteProfileColumnP
               event.target.value = "";
             }}
           />
-          <button type="button" className="btn btn--ghost btn--block" onClick={() => fileInputRef.current?.click()}>
-            Upload photo
-          </button>
-          {draft.photoDataUrl ? (
-            <button type="button" className="btn btn--ghost btn--block" onClick={() => update({ photoDataUrl: null })}>
-              Remove photo
-            </button>
-          ) : null}
+
+          {isPhotoPending ? (
+            <div className="athlete-photo__toolbar-row">
+              <button type="button" className="btn btn--primary btn--block" onClick={savePhoto}>
+                Save photo
+              </button>
+              <button type="button" className="btn btn--ghost btn--block" onClick={cancelPhoto}>
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div className="athlete-photo__toolbar-row">
+              <button
+                type="button"
+                className="btn btn--ghost btn--block"
+                disabled={photoBusy}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {photoBusy ? "Processing…" : hasSavedPhoto ? "Change photo" : "Upload photo"}
+              </button>
+              {hasSavedPhoto ? (
+                <button type="button" className="btn btn--ghost btn--block" onClick={removePhoto}>
+                  Remove photo
+                </button>
+              ) : null}
+            </div>
+          )}
+
           {photoError ? <p className="athlete-photo__error">{photoError}</p> : null}
+          {isPhotoPending ? (
+            <p className="athlete-photo__hint">Confirm with Save photo or discard with Cancel.</p>
+          ) : null}
         </div>
       </div>
 
