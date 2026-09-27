@@ -39,7 +39,7 @@ export function IdpReport({ report }: IdpReportProps) {
 
             <ImprovementsPanel playerId={player.id} min={min} max={max} />
 
-            <ReportActionsBar playerId={player.id} />
+            <ReportActionsBar playerId={player.id} report={report} />
           </div>
         </main>
 
