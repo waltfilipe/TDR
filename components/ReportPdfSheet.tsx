@@ -108,7 +108,7 @@ export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
                   const accent = entry.grade ? gradeColor(entry.grade, SGA_GRADE_COLORS.Average) : "#d8e2ec";
                   return (
                     <div key={entry.field} className="pdf-tech__card" style={{ borderLeftColor: accent }}>
-                      <span className="pdf-tech__label">{entry.field}</span>
+                      <span className="pdf-tech__label">{entry.label}</span>
                       {entry.grade ? (
                         <span className="pdf-chip" style={chipStyle(entry.grade)}>
                           <span className="pdf-chip__dot" style={{ backgroundColor: accent }} />
@@ -178,17 +178,33 @@ export function ReportPdfSheet({ snapshot }: ReportPdfSheetProps) {
             <h3>Need to Improve</h3>
             <span className="pdf-section__rule" />
           </div>
-          <ol className="pdf-improve">
+          <div className="pdf-table pdf-table--improve">
+            <div className="pdf-table__head">
+              <span>#</span>
+              <span>Focus</span>
+              <span>Reference</span>
+            </div>
             {improvements.map((item, index) => {
-              const value = item.trim();
+              const value = item.text.trim();
+              const url = normalizeHttpUrl(item.link);
+              const hasLink = isValidHttpUrl(url);
               return (
-                <li key={index} className="pdf-improve__row">
+                <div key={index} className="pdf-table__row">
                   <span className="pdf-index">{index + 1}</span>
-                  <span className={value ? undefined : "pdf-muted"}>{value || "To be defined"}</span>
-                </li>
+                  <span className={`pdf-table__name${value ? "" : " is-empty"}`}>{value || "To be defined"}</span>
+                  <span className="pdf-table__cell pdf-table__cell--wide">
+                    {hasLink ? (
+                      <span className="pdf-link" data-pdf-link={url}>
+                        {linkLabel(url)}
+                      </span>
+                    ) : (
+                      <span className="pdf-muted">{PLACEHOLDER}</span>
+                    )}
+                  </span>
+                </div>
               );
             })}
-          </ol>
+          </div>
         </section>
       </div>
 

@@ -19,8 +19,13 @@ function gradesMap(entries: GradeEntry[]): Record<string, string> {
   return Object.fromEntries(entries.map((entry) => [entry.field, entry.grade]));
 }
 
+function displayLabel(defaultName: string, labels: Record<string, string>): string {
+  return labels[defaultName]?.trim() || defaultName;
+}
+
 export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndicatorsPanelProps) {
-  const storageKey = `idp:technical-grades:${playerId}`;
+  const gradesKey = `idp:technical-grades:${playerId}`;
+  const labelsKey = `idp:technical-labels:${playerId}`;
   const ordered = useMemo(() => orderTechnicalGrades(defaults), [defaults]);
   const fallbackByField = useMemo(() => gradesMap(ordered), [ordered]);
   const colorByField = useMemo(
@@ -29,41 +34,62 @@ export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndica
   );
 
   const [grades, setGrades] = useState<Record<string, string>>(fallbackByField);
+  const [labels, setLabels] = useState<Record<string, string>>({});
   const [editing, setEditing] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     try {
-      const stored = window.localStorage.getItem(storageKey);
-      if (stored) {
-        const parsed = JSON.parse(stored) as Record<string, string>;
+      const storedGrades = window.localStorage.getItem(gradesKey);
+      const storedLabels = window.localStorage.getItem(labelsKey);
+      let nextGrades = fallbackByField;
+      let nextLabels: Record<string, string> = {};
+
+      if (storedGrades) {
+        const parsed = JSON.parse(storedGrades) as Record<string, string>;
         if (parsed && typeof parsed === "object") {
-          setGrades({ ...fallbackByField, ...parsed });
-          setLoaded(true);
-          return;
+          nextGrades = { ...fallbackByField, ...parsed };
         }
       }
+      if (storedLabels) {
+        const parsed = JSON.parse(storedLabels) as Record<string, string>;
+        if (parsed && typeof parsed === "object") {
+          nextLabels = parsed;
+        }
+      }
+
+      setGrades(nextGrades);
+      setLabels(nextLabels);
+      setLoaded(true);
     } catch {
-      // ignore
+      setGrades(fallbackByField);
+      setLabels({});
+      setLoaded(true);
     }
-    setGrades(fallbackByField);
-    setLoaded(true);
-  }, [storageKey, fallbackByField]);
+  }, [gradesKey, labelsKey, fallbackByField]);
 
   useEffect(() => {
     if (!loaded) return;
     try {
-      window.localStorage.setItem(storageKey, JSON.stringify(grades));
+      window.localStorage.setItem(gradesKey, JSON.stringify(grades));
+      window.localStorage.setItem(labelsKey, JSON.stringify(labels));
     } catch {
       // ignore
     }
-  }, [grades, loaded, storageKey]);
+  }, [grades, labels, loaded, gradesKey, labelsKey]);
 
   const setGrade = (field: string, grade: string) => {
     setGrades((current) => ({ ...current, [field]: grade }));
   };
 
-  const resetGrades = () => setGrades(fallbackByField);
+  const setLabel = (field: string, label: string) => {
+    setLabels((current) => ({ ...current, [field]: label }));
+  };
+
+  const resetAll = () => {
+    setGrades(fallbackByField);
+    setLabels({});
+  };
 
   return (
     <section className="panel" aria-labelledby="technical-title">
@@ -76,13 +102,15 @@ export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndica
             <GradeLegendTooltip />
           </div>
           <p className="panel__hint">
-            {editing ? "Edit grades below — changes save in this browser." : "View grades or use Edit to update."}
+            {editing
+              ? "Edit names and grades below — changes save in this browser."
+              : "View indicators or use Edit to update names and grades."}
           </p>
         </div>
         <div className="panel__actions no-print">
           {editing ? (
             <>
-              <button type="button" className="btn btn--ghost" onClick={resetGrades}>
+              <button type="button" className="btn btn--ghost" onClick={resetAll}>
                 Reset
               </button>
               <button type="button" className="btn btn--primary" onClick={() => setEditing(false)}>
@@ -100,6 +128,7 @@ export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndica
       <ul className="indicator-grid indicator-grid--4 indicator-grid--pairs">
         {ordered.map((entry) => {
           const grade = grades[entry.field] ?? "";
+          const label = displayLabel(entry.field, labels);
           const accent = grade ? gradeColor(grade, entry.color) : undefined;
           const fallbackColor = colorByField[entry.field] ?? entry.color;
 
@@ -109,13 +138,24 @@ export function TechnicalIndicatorsPanel({ playerId, defaults }: TechnicalIndica
               className="indicator"
               style={accent ? { ["--indicator-color" as string]: accent } : undefined}
             >
-              <span className="indicator__label">{entry.field}</span>
+              {editing ? (
+                <input
+                  className="indicator__label-input"
+                  value={labels[entry.field] ?? ""}
+                  maxLength={80}
+                  placeholder={entry.field}
+                  aria-label={`Name for ${entry.field}`}
+                  onChange={(event) => setLabel(entry.field, event.target.value)}
+                />
+              ) : (
+                <span className="indicator__label">{label}</span>
+              )}
               <div className="indicator__grade-row">
                 {editing ? (
                   <select
                     className="indicator__select"
                     value={grade}
-                    aria-label={`Grade for ${entry.field}`}
+                    aria-label={`Grade for ${label}`}
                     onChange={(event) => setGrade(entry.field, event.target.value)}
                   >
                     <option value="">Ungraded</option>

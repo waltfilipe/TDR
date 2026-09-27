@@ -1,3 +1,4 @@
+import type { ImproveItem } from "@/components/ImprovementsPanel";
 import type { PsiItem } from "@/components/PlayerSpecificPanel";
 import {
   orderTechnicalGrades,
@@ -16,9 +17,9 @@ export type StoredAthlete = {
 
 export type ReportSnapshot = {
   athlete: StoredAthlete;
-  technical: { field: string; grade: string }[];
+  technical: { field: string; label: string; grade: string }[];
   psi: PsiItem[];
-  improvements: string[];
+  improvements: ImproveItem[];
 };
 
 function readJson<T>(key: string): T | null {
@@ -55,6 +56,21 @@ function normalizePsi(items: unknown[], min: number, max: number): PsiItem[] {
   return next;
 }
 
+function normalizeImprove(items: unknown[], min: number, max: number): ImproveItem[] {
+  const next = items.slice(0, max).map((row) => {
+    if (typeof row === "string") {
+      return { text: row, link: "" };
+    }
+    const item = row as Partial<ImproveItem>;
+    return {
+      text: typeof item.text === "string" ? item.text : "",
+      link: typeof item.link === "string" ? item.link : "",
+    };
+  });
+  while (next.length < min) next.push({ text: "", link: "" });
+  return next;
+}
+
 export function loadReportSnapshot(
   playerId: number,
   report: IdpReport,
@@ -70,25 +86,25 @@ export function loadReportSnapshot(
   };
 
   const storedGrades = readJson<Record<string, string>>(`idp:technical-grades:${playerId}`);
+  const storedLabels = readJson<Record<string, string>>(`idp:technical-labels:${playerId}`);
   const grades = { ...fallbackGrades, ...(storedGrades ?? {}) };
+  const labels = storedLabels ?? {};
 
   const storedPsi = readJson<unknown[]>(`idp:player-specific:${playerId}`);
   const psi = storedPsi
     ? normalizePsi(storedPsi, limits.min, limits.max)
     : normalizePsi([], limits.min, limits.max);
 
-  const storedImprove = readJson<string[]>(`idp:improvements:${playerId}`);
-  const improvements =
-    storedImprove && Array.isArray(storedImprove)
-      ? storedImprove.slice(0, limits.max)
-      : Array.from({ length: limits.min }, () => "");
-
-  while (improvements.length < limits.min) improvements.push("");
+  const storedImprove = readJson<unknown[]>(`idp:improvements:${playerId}`);
+  const improvements = storedImprove
+    ? normalizeImprove(storedImprove, limits.min, limits.max)
+    : normalizeImprove([], limits.min, limits.max);
 
   return {
     athlete,
     technical: ordered.map((entry: GradeEntry) => ({
       field: entry.field,
+      label: labels[entry.field]?.trim() || entry.field,
       grade: grades[entry.field] ?? "",
     })),
     psi,
